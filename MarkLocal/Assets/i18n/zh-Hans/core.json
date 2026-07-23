@@ -1,0 +1,18 @@
+{
+  "core.cli.help": "MarkLocal — 面向 Windows 的本地 Markdown 编辑器和查看器。\n\n用法：\n  marklocal.exe                          打开应用并新建文档。\n  marklocal.exe <file.md>                在界面中打开文件。\n  marklocal.exe --export-html <file>     不启动界面转换为 HTML。\n                  [--output path.html]   输出路径（默认在 .md 旁边）。\n                  [--theme light|dark]   应用于导出 HTML 的 CSS。\n  marklocal.exe --version                显示版本。\n  marklocal.exe --help                   显示此帮助。\n",
+  "core.cli.missingExportPath": "--export-html 后缺少 Markdown 文件路径。",
+  "core.cli.missingOutputPath": "--output 后缺少路径。",
+  "core.cli.unknownTheme": "未知主题。请使用 light 或 dark。",
+  "core.cli.unknownOption": "未知选项：{0}",
+  "core.cli.fileNotFound": "文件不存在：{0}",
+  "core.cli.exportError": "导出 HTML 出错：\n{0}",
+  "core.app.helpTitle": "MarkLocal — 帮助",
+  "core.templates.notes.filename": "笔记.md",
+  "core.templates.notes.content": "# 笔记标题\n\n> 日期：{{date}}\n\n## 摘要\n\n关于内容的一两句话。\n\n## 关键概念\n\n- 概念 1\n- 概念 2\n- 概念 3\n\n## 笔记\n\n自由文本。\n\n## 参考资料\n\n- 来源 1\n- 来源 2\n",
+  "core.templates.meeting.filename": "会议.md",
+  "core.templates.meeting.content": "# 会议 — {{date}}\n\n## 参会者\n\n- 人员 1\n- 人员 2\n\n## 议程\n\n1. 事项 1\n2. 事项 2\n\n## 决议\n\n- 决议 1\n- 决议 2\n\n## 行动项\n\n- [ ] 任务 1 — 负责人\n- [ ] 任务 2 — 负责人\n\n## 下次会议\n\n日期和地点。\n",
+  "core.templates.readme.filename": "项目 README.md",
+  "core.templates.readme.content": "# 项目名称\n\n一句话说明这是关于什么的。\n\n## 安装\n\n```bash\n# 步骤\n```\n\n## 用法\n\n```bash\n# 示例\n```\n\n## 配置\n\n变量、文件、选项。\n\n## 开发\n\n如何构建、测试、贡献。\n\n## 许可证\n\nMIT（或适用的许可证）。\n",
+  "core.templates.article.filename": "文章.md",
+  "core.templates.article.content": "---\ntitle: 文章标题\ndate: {{date}}\ntags: []\n---\n\n# 文章标题\n\n> 一句话点明核心思想。\n\n## 引言\n\n提出问题。\n\n## 正文\n\n用示例进行说明。\n\n## 结论\n\n收尾并总结。\n\n## 参考资料\n\n1. 来源。\n"
+}

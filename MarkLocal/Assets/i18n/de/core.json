@@ -1,0 +1,18 @@
+{
+  "core.cli.help": "MarkLocal — lokaler Markdown-Editor und -Betrachter für Windows.\n\nVerwendung:\n  marklocal.exe                          Öffnet die App mit einem neuen Dokument.\n  marklocal.exe <datei.md>               Öffnet die Datei in der Oberfläche.\n  marklocal.exe --export-html <datei>    Konvertiert nach HTML ohne Oberfläche.\n                  [--output pfad.html]   Ausgabepfad (Standard: neben der .md-Datei).\n                  [--theme light|dark]   Auf das exportierte HTML anzuwendendes CSS.\n  marklocal.exe --version                Zeigt die Version an.\n  marklocal.exe --help                   Zeigt diese Hilfe an.\n",
+  "core.cli.missingExportPath": "Der Pfad zur Markdown-Datei fehlt nach --export-html.",
+  "core.cli.missingOutputPath": "Der Pfad fehlt nach --output.",
+  "core.cli.unknownTheme": "Unbekanntes Theme. Verwenden Sie light oder dark.",
+  "core.cli.unknownOption": "Unbekannte Option: {0}",
+  "core.cli.fileNotFound": "Datei existiert nicht: {0}",
+  "core.cli.exportError": "Fehler beim Exportieren nach HTML:\n{0}",
+  "core.app.helpTitle": "MarkLocal — Hilfe",
+  "core.templates.notes.filename": "Notizen.md",
+  "core.templates.notes.content": "# Titel der Notizen\n\n> Datum: {{date}}\n\n## Zusammenfassung\n\nEin oder zwei Sätze zum Inhalt.\n\n## Kernkonzepte\n\n- Konzept 1\n- Konzept 2\n- Konzept 3\n\n## Notizen\n\nFreier Text.\n\n## Quellen\n\n- Quelle 1\n- Quelle 2\n",
+  "core.templates.meeting.filename": "Besprechung.md",
+  "core.templates.meeting.content": "# Besprechung — {{date}}\n\n## Teilnehmer\n\n- Person 1\n- Person 2\n\n## Tagesordnung\n\n1. Punkt 1\n2. Punkt 2\n\n## Entscheidungen\n\n- Entscheidung 1\n- Entscheidung 2\n\n## Aufgaben\n\n- [ ] Aufgabe 1 — Verantwortlicher\n- [ ] Aufgabe 2 — Verantwortlicher\n\n## Nächste Besprechung\n\nDatum und Ort.\n",
+  "core.templates.readme.filename": "Projekt-README.md",
+  "core.templates.readme.content": "# Projektname\n\nEin Satz, der erklärt, worum es geht.\n\n## Installation\n\n```bash\n# Schritte\n```\n\n## Verwendung\n\n```bash\n# Beispiel\n```\n\n## Konfiguration\n\nVariablen, Dateien, Optionen.\n\n## Entwicklung\n\nWie man baut, testet, beiträgt.\n\n## Lizenz\n\nMIT (oder die zutreffende Lizenz).\n",
+  "core.templates.article.filename": "Artikel.md",
+  "core.templates.article.content": "---\ntitle: Titel des Artikels\ndate: {{date}}\ntags: []\n---\n\n# Titel des Artikels\n\n> Eine Kernidee in einem Satz.\n\n## Einleitung\n\nSchildern Sie das Problem.\n\n## Hauptteil\n\nErklären Sie es mit Beispielen.\n\n## Fazit\n\nFassen Sie zusammen.\n\n## Quellen\n\n1. Quelle.\n"
+}
