@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using MarkLocal.Core;
 
 namespace MarkLocal.Models;
 
@@ -49,7 +50,7 @@ public class DocumentModel : INotifyPropertyChanged
     {
         get
         {
-            var name = IsUntitled ? "Sin título.md" : Path.GetFileName(_filePath!);
+            var name = IsUntitled ? Loc.T("main.file.untitledMd") : Path.GetFileName(_filePath!);
             return _isDirty ? name + " *" : name;
         }
     }

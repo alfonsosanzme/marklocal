@@ -25,12 +25,12 @@
       InstallerVersion="500"
       Compressed="yes">
 
-    <SummaryInformation Description="Editor y visor Markdown local para Windows" />
+    <SummaryInformation Description="!(loc.SummaryDescription)" />
 
     <!-- Cada versión nueva desinstala la anterior y luego instala la nueva. -->
     <MajorUpgrade
         AllowSameVersionUpgrades="yes"
-        DowngradeErrorMessage="Ya tienes instalada una versión más reciente de MarkLocal." />
+        DowngradeErrorMessage="!(loc.DowngradeError)" />
 
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
 
@@ -62,7 +62,7 @@
       <Shortcut
           Id="MarkLocalStartMenu"
           Name="MarkLocal"
-          Description="Editor Markdown local"
+          Description="!(loc.ShortcutDescription)"
           Target="[INSTALLFOLDER]MarkLocal.exe"
           WorkingDirectory="INSTALLFOLDER"
           Icon="MarkLocalIcon.exe"
@@ -78,7 +78,7 @@
       <Shortcut
           Id="MarkLocalDesktop"
           Name="MarkLocal"
-          Description="Editor Markdown local"
+          Description="!(loc.ShortcutDescription)"
           Target="[INSTALLFOLDER]MarkLocal.exe"
           WorkingDirectory="INSTALLFOLDER"
           Icon="MarkLocalIcon.exe"
@@ -91,7 +91,7 @@
          Per-user: HKCU\Software\Classes.
          ============================================================ -->
     <Component Id="FileAssociation" Directory="INSTALLFOLDER" Guid="D6F89A2A-7E1B-4E11-9C5A-AC97B97E4FCC">
-      <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md" Type="string" Value="Documento Markdown" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md" Type="string" Value="!(loc.MarkdownDocument)" />
       <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md\DefaultIcon" Type="string" Value="&quot;[INSTALLFOLDER]MarkLocal.exe&quot;,0" />
       <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md\shell\open\command" Type="string" Value="&quot;[INSTALLFOLDER]MarkLocal.exe&quot; &quot;%1&quot;" />
       <RegistryValue Root="HKCU" Key="Software\Classes\.md" Type="string" Value="MarkLocal.md" />
@@ -108,8 +108,8 @@
          del publish self-contained como componentes implícitos.
          ============================================================ -->
     <Feature Id="Main"
-             Title="MarkLocal"
-             Description="Archivos del programa, runtime y atajo en menú Inicio."
+             Title="!(loc.FeatureMainTitle)"
+             Description="!(loc.FeatureMainDescription)"
              Level="1"
              ConfigurableDirectory="INSTALLFOLDER"
              Display="expand"
@@ -119,16 +119,16 @@
       <ComponentRef Id="StartMenuShortcut" />
 
       <Feature Id="DesktopFeature"
-               Title="Atajo en el escritorio"
-               Description="Crea un icono en el escritorio."
+               Title="!(loc.FeatureDesktopTitle)"
+               Description="!(loc.FeatureDesktopDescription)"
                Level="1"
                AllowAdvertise="no">
         <ComponentRef Id="DesktopShortcut" />
       </Feature>
 
       <Feature Id="AssociationFeature"
-               Title="Asociar .md y .markdown"
-               Description="Abre los archivos .md/.markdown con MarkLocal al hacer doble clic."
+               Title="!(loc.FeatureAssocTitle)"
+               Description="!(loc.FeatureAssocDescription)"
                Level="1"
                AllowAdvertise="no">
         <ComponentRef Id="FileAssociation" />

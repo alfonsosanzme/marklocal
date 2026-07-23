@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using ICSharpCode.AvalonEdit;
+using MarkLocal.Core;
 
 namespace MarkLocal.Views;
 
@@ -45,14 +46,14 @@ public partial class FindReplaceDialog : Window
             match = regex.Match(text);
             if (!match.Success)
             {
-                StatusText.Text = "Sin coincidencias.";
+                StatusText.Text = Loc.T("views.find.noMatches");
                 return;
             }
-            StatusText.Text = "Volviendo al inicio del documento.";
+            StatusText.Text = Loc.T("views.find.wrapped");
         }
         else
         {
-            StatusText.Text = $"Coincidencia en pos. {match.Index}.";
+            StatusText.Text = Loc.T("views.find.matchAt", match.Index);
         }
         _editor.Select(match.Index, match.Length);
         _editor.ScrollToLine(_editor.Document.GetLocation(match.Index).Line);
@@ -81,12 +82,12 @@ public partial class FindReplaceDialog : Window
         var matches = regex.Matches(text);
         if (matches.Count == 0)
         {
-            StatusText.Text = "Sin coincidencias.";
+            StatusText.Text = Loc.T("views.find.noMatches");
             return;
         }
         string updated = regex.Replace(text, replacement);
         _editor.Document.Text = updated;
-        StatusText.Text = $"{matches.Count} reemplazos.";
+        StatusText.Text = Loc.T("views.find.replacedCount", matches.Count);
     }
 
     private void OnClose(object sender, RoutedEventArgs e) => Close();

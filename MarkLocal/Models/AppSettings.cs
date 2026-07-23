@@ -43,5 +43,6 @@ public class AppSettings
     public string? CustomCssPath { get; set; }
     public string? WorkspacePath { get; set; }
     public string? UpdateFeedUrl { get; set; }
+    public string Language { get; set; } = "auto";
     public List<string> RecentFiles { get; set; } = new();
 }

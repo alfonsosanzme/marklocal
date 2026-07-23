@@ -11,7 +11,7 @@
     <RootNamespace>MarkLocal</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\marklocal.ico</ApplicationIcon>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <Authors>Alfonso Sanz López (Kairis)</Authors>
     <Product>MarkLocal</Product>
     <Description>Editor y visor Markdown local para Windows. Creado por Alfonso Sanz López (Kairis · kairis.es). Desarrollo apoyado en Claude Opus 4.7.</Description>
@@ -46,6 +46,10 @@
     <None Include="Assets\lib\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>Assets\lib\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+    <None Include="Assets\i18n\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\i18n\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
     <Resource Include="Resources\MarkdownHighlighting.xshd" />
     <Resource Include="Resources\MarkdownHighlighting.Dark.xshd" />

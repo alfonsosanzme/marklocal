@@ -6,6 +6,15 @@ namespace MarkLocal.Tests;
 
 internal static class TestFactory
 {
+    static TestFactory()
+    {
+        // Los tests validan textos del idioma base; cargar el inglés una sola vez.
+        Loc.Initialize("en");
+    }
+
+    /// <summary>Fuerza la ejecución del constructor estático (inicializa Loc).</summary>
+    public static void EnsureLocalization() { }
+
     public static SettingsService CreateIsolatedSettings()
     {
         string tmp = Path.Combine(Path.GetTempPath(), "MarkLocal.Tests", Guid.NewGuid().ToString("N"));

@@ -52,7 +52,7 @@ public class CliRunner
                     }
                     else
                     {
-                        result.ErrorMessage = "Falta la ruta del archivo Markdown tras --export-html.";
+                        result.ErrorMessage = Loc.T("core.cli.missingExportPath");
                         return result;
                     }
                     break;
@@ -63,7 +63,7 @@ public class CliRunner
                     }
                     else
                     {
-                        result.ErrorMessage = "Falta la ruta tras --output.";
+                        result.ErrorMessage = Loc.T("core.cli.missingOutputPath");
                         return result;
                     }
                     break;
@@ -73,13 +73,13 @@ public class CliRunner
                         string theme = args[++i].ToLowerInvariant();
                         if (theme == "dark") { result.Dark = true; result.ForceTheme = true; }
                         else if (theme == "light") { result.Dark = false; result.ForceTheme = true; }
-                        else { result.ErrorMessage = "Tema desconocido. Usa light o dark."; return result; }
+                        else { result.ErrorMessage = Loc.T("core.cli.unknownTheme"); return result; }
                     }
                     break;
                 default:
                     if (a.StartsWith("-"))
                     {
-                        result.ErrorMessage = "Opción desconocida: " + a;
+                        result.ErrorMessage = Loc.T("core.cli.unknownOption", a);
                         return result;
                     }
                     if (result.InputPath == null && result.Action == Action.ShowUi)
@@ -93,18 +93,7 @@ public class CliRunner
         return result;
     }
 
-    public static string GetHelpText() =>
-@"MarkLocal — editor y visor Markdown local para Windows.
-
-Uso:
-  marklocal.exe                          Abre la app con un documento nuevo.
-  marklocal.exe <archivo.md>             Abre el archivo en la interfaz.
-  marklocal.exe --export-html <archivo>  Convierte a HTML sin interfaz.
-                  [--output ruta.html]   Ruta de salida (por defecto junto al .md).
-                  [--theme light|dark]   CSS a aplicar al HTML exportado.
-  marklocal.exe --version                Muestra la versión.
-  marklocal.exe --help                   Muestra esta ayuda.
-";
+    public static string GetHelpText() => Loc.T("core.cli.help");
 
     public static string GetVersionText() =>
         "MarkLocal " + (typeof(CliRunner).Assembly.GetName().Version?.ToString() ?? "0.1.0");
@@ -113,7 +102,7 @@ Uso:
     {
         if (string.IsNullOrEmpty(parsed.InputPath) || !File.Exists(parsed.InputPath))
         {
-            MessageBox.Show($"El archivo no existe: {parsed.InputPath}", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(Loc.T("core.cli.fileNotFound", parsed.InputPath ?? string.Empty), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
             return 2;
         }
 
@@ -131,7 +120,7 @@ Uso:
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error al exportar HTML:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Loc.T("core.cli.exportError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
             return 3;
         }
     }

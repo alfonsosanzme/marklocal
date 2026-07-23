@@ -23,4 +23,12 @@
     <ProjectReference Include="..\MarkLocal\MarkLocal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Los textos i18n son necesarios para que Loc.T resuelva en los tests (p. ej. la ayuda del CLI). -->
+    <None Include="..\MarkLocal\Assets\i18n\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\i18n\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -35,10 +35,13 @@ public class TemplateService
 
         if (Directory.EnumerateFiles(TemplatesDirectory, "*.md").Any()) return;
 
-        WriteIfMissing("Apuntes.md", DefaultTemplates.Apuntes);
-        WriteIfMissing("Reunion.md", DefaultTemplates.Reunion);
-        WriteIfMissing("README del proyecto.md", DefaultTemplates.Readme);
-        WriteIfMissing("Articulo.md", DefaultTemplates.Articulo);
+        // Nombre de archivo y contenido en el idioma activo. Loc.T(clave) SIN argumentos
+        // no pasa por string.Format, así que los tokens de llaves dobles {{date}}, {{year}}…
+        // del contenido se conservan intactos hasta ExpandTokens.
+        WriteIfMissing(Loc.T("core.templates.notes.filename"),   Loc.T("core.templates.notes.content"));
+        WriteIfMissing(Loc.T("core.templates.meeting.filename"), Loc.T("core.templates.meeting.content"));
+        WriteIfMissing(Loc.T("core.templates.readme.filename"),  Loc.T("core.templates.readme.content"));
+        WriteIfMissing(Loc.T("core.templates.article.filename"), Loc.T("core.templates.article.content"));
     }
 
     public IReadOnlyList<TemplateInfo> GetAvailable()
@@ -84,118 +87,4 @@ public class TemplateService
         {
         }
     }
-}
-
-internal static class DefaultTemplates
-{
-    public const string Apuntes =
-@"# Título de los apuntes
-
-> Fecha: {{date}}
-
-## Resumen
-
-Una o dos frases sobre el contenido.
-
-## Conceptos clave
-
-- Concepto 1
-- Concepto 2
-- Concepto 3
-
-## Notas
-
-Texto libre.
-
-## Referencias
-
-- Fuente 1
-- Fuente 2
-";
-
-    public const string Reunion =
-@"# Reunión — {{date}}
-
-## Asistentes
-
-- Persona 1
-- Persona 2
-
-## Agenda
-
-1. Punto 1
-2. Punto 2
-
-## Acuerdos
-
-- Acuerdo 1
-- Acuerdo 2
-
-## Tareas
-
-- [ ] Tarea 1 — responsable
-- [ ] Tarea 2 — responsable
-
-## Próxima reunión
-
-Fecha y lugar.
-";
-
-    public const string Readme =
-@"# Nombre del proyecto
-
-Una frase que explique de qué va.
-
-## Instalación
-
-```bash
-# pasos
-```
-
-## Uso
-
-```bash
-# ejemplo
-```
-
-## Configuración
-
-Variables, archivos, opciones.
-
-## Desarrollo
-
-Cómo compilar, probar, contribuir.
-
-## Licencia
-
-MIT (o la que toque).
-";
-
-    public const string Articulo =
-@"---
-title: Título del artículo
-date: {{date}}
-tags: []
----
-
-# Título del artículo
-
-> Una idea fuerza en una frase.
-
-## Introducción
-
-Plantea el problema.
-
-## Desarrollo
-
-Explica con ejemplos.
-
-## Conclusiones
-
-Cierra y sintetiza.
-
-## Referencias
-
-1. Fuente.
-";
 }

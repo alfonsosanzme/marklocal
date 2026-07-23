@@ -1,0 +1,18 @@
+{
+  "core.cli.help": "MarkLocal — editor y visor Markdown local para Windows.\n\nUso:\n  marklocal.exe                          Abre la app con un documento nuevo.\n  marklocal.exe <archivo.md>             Abre el archivo en la interfaz.\n  marklocal.exe --export-html <archivo>  Convierte a HTML sin interfaz.\n                  [--output ruta.html]   Ruta de salida (por defecto junto al .md).\n                  [--theme light|dark]   CSS a aplicar al HTML exportado.\n  marklocal.exe --version                Muestra la versión.\n  marklocal.exe --help                   Muestra esta ayuda.\n",
+  "core.cli.missingExportPath": "Falta la ruta del archivo Markdown tras --export-html.",
+  "core.cli.missingOutputPath": "Falta la ruta tras --output.",
+  "core.cli.unknownTheme": "Tema desconocido. Usa light o dark.",
+  "core.cli.unknownOption": "Opción desconocida: {0}",
+  "core.cli.fileNotFound": "El archivo no existe: {0}",
+  "core.cli.exportError": "Error al exportar HTML:\n{0}",
+  "core.app.helpTitle": "MarkLocal — Ayuda",
+  "core.templates.notes.filename": "Apuntes.md",
+  "core.templates.notes.content": "# Título de los apuntes\n\n> Fecha: {{date}}\n\n## Resumen\n\nUna o dos frases sobre el contenido.\n\n## Conceptos clave\n\n- Concepto 1\n- Concepto 2\n- Concepto 3\n\n## Notas\n\nTexto libre.\n\n## Referencias\n\n- Fuente 1\n- Fuente 2\n",
+  "core.templates.meeting.filename": "Reunion.md",
+  "core.templates.meeting.content": "# Reunión — {{date}}\n\n## Asistentes\n\n- Persona 1\n- Persona 2\n\n## Agenda\n\n1. Punto 1\n2. Punto 2\n\n## Acuerdos\n\n- Acuerdo 1\n- Acuerdo 2\n\n## Tareas\n\n- [ ] Tarea 1 — responsable\n- [ ] Tarea 2 — responsable\n\n## Próxima reunión\n\nFecha y lugar.\n",
+  "core.templates.readme.filename": "README del proyecto.md",
+  "core.templates.readme.content": "# Nombre del proyecto\n\nUna frase que explique de qué va.\n\n## Instalación\n\n```bash\n# pasos\n```\n\n## Uso\n\n```bash\n# ejemplo\n```\n\n## Configuración\n\nVariables, archivos, opciones.\n\n## Desarrollo\n\nCómo compilar, probar, contribuir.\n\n## Licencia\n\nMIT (o la que toque).\n",
+  "core.templates.article.filename": "Articulo.md",
+  "core.templates.article.content": "---\ntitle: Título del artículo\ndate: {{date}}\ntags: []\n---\n\n# Título del artículo\n\n> Una idea fuerza en una frase.\n\n## Introducción\n\nPlantea el problema.\n\n## Desarrollo\n\nExplica con ejemplos.\n\n## Conclusiones\n\nCierra y sintetiza.\n\n## Referencias\n\n1. Fuente.\n"
+}

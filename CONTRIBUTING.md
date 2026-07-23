@@ -1,34 +1,36 @@
-# Contribuir a MarkLocal
+# Contributing to MarkLocal
 
-¡Gracias por el interés! MarkLocal es un proyecto pequeño y pragmático. Reglas de juego:
+English | **[Español](CONTRIBUTING.es.md)**
 
-## Principios del proyecto
+Thanks for your interest! MarkLocal is a small, pragmatic project. Ground rules:
 
-Antes de proponer algo grande, ten en cuenta los principios que guían las decisiones (están en [docs/especificacion.md](docs/especificacion.md)):
+## Project principles
 
-1. **Local-first** — todo funciona sin internet. Nada de cuentas, nube ni telemetría.
-2. **Ligero** — pocas dependencias. Se rechazan librerías pesadas si hay alternativa razonable.
-3. **Predecible** — lo que se guarda es Markdown plano, sin formato propietario.
-4. **En español** — la UI del proyecto es en castellano (la i18n está en el backlog).
+Before proposing anything big, keep in mind the principles that guide decisions (they're in [docs/especificacion.md](docs/especificacion.md), in Spanish):
 
-## Cómo contribuir
+1. **Local-first** — everything works without internet. No accounts, no cloud, no telemetry.
+2. **Lightweight** — few dependencies. Heavy libraries are rejected when there's a reasonable alternative.
+3. **Predictable** — what gets saved is plain Markdown, no proprietary format.
+4. **Multilingual, English-first** — the app ships in several languages (EN/ES/DE/FR/zh-Hans) with English as the base language. UI contributions must add their keys to the English (`en/`) JSON, and optionally to the other languages.
 
-- **Bugs**: abre un issue con pasos de reproducción, versión (Ayuda → Acerca de) y si usas MSI o portable.
-- **Features**: abre un issue antes de picar código; así evitamos trabajo que no encaje con los principios.
-- **PRs**: rama desde `main`, descripción clara de qué y por qué. Los tests deben pasar:
+## How to contribute
+
+- **Bugs**: open an issue with reproduction steps, the version (Help → About), and whether you use the MSI or portable build.
+- **Features**: open an issue before writing code; this avoids work that doesn't fit the principles.
+- **PRs**: branch from `main`, with a clear description of what and why. Tests must pass:
 
 ```powershell
 dotnet test .\MarkLocal.Tests\MarkLocal.Tests.csproj
 ```
 
-## Entorno de desarrollo
+## Development environment
 
-- SDK de .NET 8, Windows 10/11.
-- `dotnet run --project .\MarkLocal\MarkLocal.csproj` para lanzar.
-- Los scripts de empaquetado están en `MarkLocal\scripts\` (portable y MSI).
+- .NET 8 SDK, Windows 10/11.
+- `dotnet run --project .\MarkLocal\MarkLocal.csproj` to launch.
+- The packaging scripts live in `MarkLocal\scripts\` (portable and MSI).
 
-## Estilo
+## Style
 
-- C# idiomático .NET 8, nullable habilitado.
-- El código sigue el estilo del archivo en el que estés — comentarios escasos y solo donde el código no puede explicarse solo.
-- Mensajes de UI en castellano con tildes correctas.
+- Idiomatic C# for .NET 8, nullable enabled.
+- Follow the style of whatever file you're in — sparse comments, only where the code can't explain itself.
+- UI strings live in the localization JSON files, not hardcoded — add new keys to the English (`en/`) base and, where you can, the other languages.

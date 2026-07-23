@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+  <String Id="SummaryDescription" Value="A local Markdown editor and viewer for Windows" />
+  <String Id="DowngradeError" Value="A newer version of MarkLocal is already installed." />
+  <String Id="FeatureMainTitle" Value="MarkLocal" />
+  <String Id="FeatureMainDescription" Value="Program files, runtime, and Start Menu shortcut." />
+  <String Id="FeatureDesktopTitle" Value="Desktop shortcut" />
+  <String Id="FeatureDesktopDescription" Value="Creates an icon on the desktop." />
+  <String Id="FeatureAssocTitle" Value="Associate .md and .markdown" />
+  <String Id="FeatureAssocDescription" Value="Opens .md/.markdown files with MarkLocal on double-click." />
+  <String Id="ShortcutDescription" Value="Local Markdown editor" />
+  <String Id="UninstallShortcut" Value="Uninstall MarkLocal" />
+  <String Id="MarkdownDocument" Value="Markdown Document" />
+</WixLocalization>

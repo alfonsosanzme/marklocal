@@ -33,7 +33,11 @@
 param(
     [string]$OutputDirectory,
     [switch]$SkipBuild,
-    [string]$Runtime = "win-x64"
+    [string]$Runtime = "win-x64",
+    # Culturas del asistente de instalación. Se genera un MSI por cultura,
+    # con sufijo de idioma en el nombre (-en, -es, ...). La APP en sí es
+    # multiidioma siempre (auto-detecta el idioma del sistema).
+    [string]$Cultures = "en-US,es-ES"
 )
 
 $ErrorActionPreference = "Stop"
@@ -109,37 +113,44 @@ $wixVersion = $version
 $parts = $wixVersion.Split('.')
 if ($parts.Length -eq 2) { $wixVersion = $version + ".0" }
 
-$msiName = "MarkLocal-v$version.msi"
-$msiPath = Join-Path $OutputDirectory $msiName
-if (Test-Path $msiPath) { Remove-Item $msiPath -Force }
+$cultureList = @($Cultures -split '[,\s]+' | Where-Object { $_ })
+if ($cultureList.Count -eq 0) { $cultureList = @("en-US") }
 
-Write-Host "Construyendo MSI con WiX..." -ForegroundColor Cyan
-Write-Host ("  Versión:     {0}" -f $wixVersion)
-Write-Host ("  PublishDir:  {0}" -f $publishDir)
-Write-Host ("  Icono:       {0}" -f $iconFile)
-Write-Host ("  Salida:      {0}" -f $msiPath)
-Write-Host ""
+foreach ($culture in $cultureList) {
+    $langSuffix = $culture.Split('-')[0]
+    $msiName = "MarkLocal-v$version-$langSuffix.msi"
+    $msiPath = Join-Path $OutputDirectory $msiName
+    if (Test-Path $msiPath) { Remove-Item $msiPath -Force }
 
-# Cargamos la extensión UI para WixUI_FeatureTree.
-$wixArgs = @(
-    "build",
-    $wxsFile,
-    "-arch", "x64",
-    "-culture", "es-ES",
-    "-d", "Version=$wixVersion",
-    "-d", "PublishDir=$publishDir",
-    "-d", "IconPath=$iconFile",
-    "-ext", "WixToolset.UI.wixext",
-    "-out", $msiPath
-)
+    Write-Host ("Construyendo MSI ({0})..." -f $culture) -ForegroundColor Cyan
+    Write-Host ("  Versión:     {0}" -f $wixVersion)
+    Write-Host ("  Salida:      {0}" -f $msiPath)
 
-& $wix @wixArgs
-if ($LASTEXITCODE -ne 0) { throw "wix build devolvió $LASTEXITCODE." }
+    $wxlFile = Join-Path (Split-Path -Parent $wxsFile) ("MarkLocal.{0}.wxl" -f $culture)
+    if (-not (Test-Path $wxlFile)) {
+        throw "Falta el archivo de localización $wxlFile para la cultura $culture."
+    }
 
-$sizeMB = [math]::Round((Get-Item $msiPath).Length / 1MB, 1)
-Write-Host ""
-Write-Host ("OK: {0} ({1} MB)" -f $msiPath, $sizeMB) -ForegroundColor Green
-Write-Host ""
-Write-Host "Para instalar (silencioso): msiexec /i `"$msiPath`" /qb"
+    $wixArgs = @(
+        "build",
+        $wxsFile,
+        "-arch", "x64",
+        "-culture", $culture,
+        "-loc", $wxlFile,
+        "-d", "Version=$wixVersion",
+        "-d", "PublishDir=$publishDir",
+        "-d", "IconPath=$iconFile",
+        "-ext", "WixToolset.UI.wixext",
+        "-out", $msiPath
+    )
+
+    & $wix @wixArgs
+    if ($LASTEXITCODE -ne 0) { throw "wix build ($culture) devolvió $LASTEXITCODE." }
+
+    $sizeMB = [math]::Round((Get-Item $msiPath).Length / 1MB, 1)
+    Write-Host ("OK: {0} ({1} MB)" -f $msiPath, $sizeMB) -ForegroundColor Green
+    Write-Host ""
+}
+
+Write-Host "Para instalar (silencioso): msiexec /i `"<ruta al .msi>`" /qb"
 Write-Host "Para instalar (interactivo): doble clic en el .msi"
-Write-Host "Para desinstalar: msiexec /x `"$msiPath`" /qb"

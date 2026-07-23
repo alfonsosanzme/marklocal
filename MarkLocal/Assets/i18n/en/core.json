@@ -1,0 +1,18 @@
+{
+  "core.cli.help": "MarkLocal — local Markdown editor and viewer for Windows.\n\nUsage:\n  marklocal.exe                          Open the app with a new document.\n  marklocal.exe <file.md>                Open the file in the interface.\n  marklocal.exe --export-html <file>     Convert to HTML without the interface.\n                  [--output path.html]   Output path (defaults next to the .md).\n                  [--theme light|dark]   CSS to apply to the exported HTML.\n  marklocal.exe --version                Show the version.\n  marklocal.exe --help                   Show this help.\n",
+  "core.cli.missingExportPath": "Missing the Markdown file path after --export-html.",
+  "core.cli.missingOutputPath": "Missing the path after --output.",
+  "core.cli.unknownTheme": "Unknown theme. Use light or dark.",
+  "core.cli.unknownOption": "Unknown option: {0}",
+  "core.cli.fileNotFound": "File does not exist: {0}",
+  "core.cli.exportError": "Error exporting HTML:\n{0}",
+  "core.app.helpTitle": "MarkLocal — Help",
+  "core.templates.notes.filename": "Notes.md",
+  "core.templates.notes.content": "# Notes title\n\n> Date: {{date}}\n\n## Summary\n\nA sentence or two about the content.\n\n## Key concepts\n\n- Concept 1\n- Concept 2\n- Concept 3\n\n## Notes\n\nFree text.\n\n## References\n\n- Source 1\n- Source 2\n",
+  "core.templates.meeting.filename": "Meeting.md",
+  "core.templates.meeting.content": "# Meeting — {{date}}\n\n## Attendees\n\n- Person 1\n- Person 2\n\n## Agenda\n\n1. Item 1\n2. Item 2\n\n## Decisions\n\n- Decision 1\n- Decision 2\n\n## Action items\n\n- [ ] Task 1 — owner\n- [ ] Task 2 — owner\n\n## Next meeting\n\nDate and place.\n",
+  "core.templates.readme.filename": "Project README.md",
+  "core.templates.readme.content": "# Project name\n\nA sentence explaining what it is about.\n\n## Installation\n\n```bash\n# steps\n```\n\n## Usage\n\n```bash\n# example\n```\n\n## Configuration\n\nVariables, files, options.\n\n## Development\n\nHow to build, test, contribute.\n\n## License\n\nMIT (or whichever applies).\n",
+  "core.templates.article.filename": "Article.md",
+  "core.templates.article.content": "---\ntitle: Article title\ndate: {{date}}\ntags: []\n---\n\n# Article title\n\n> A key idea in one sentence.\n\n## Introduction\n\nState the problem.\n\n## Body\n\nExplain with examples.\n\n## Conclusions\n\nWrap up and summarize.\n\n## References\n\n1. Source.\n"
+}

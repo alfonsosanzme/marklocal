@@ -82,7 +82,7 @@ public partial class MainWindow : Window
         if (_app.IsPortable)
         {
             PortableIndicator.Visibility = Visibility.Visible;
-            PortableIndicator.ToolTip = "Modo portable: la configuración, los borradores y la caché de WebView2 se guardan en " + _app.PortableRoot;
+            PortableIndicator.ToolTip = Loc.T("main.portable.tooltip", _app.PortableRoot);
         }
         UpdateModeMenu();
         ApplyEditorThemeColors();
@@ -205,7 +205,7 @@ public partial class MainWindow : Window
             else if (_document.IsUntitled || _document.IsDirty)
             {
                 _draft.OriginalPath = _document.FilePath;
-                _draft.Title = _document.IsUntitled ? "Sin título" : Path.GetFileName(_document.FilePath!);
+                _draft.Title = _document.IsUntitled ? Loc.T("main.draft.untitled") : Path.GetFileName(_document.FilePath!);
                 try
                 {
                     await _app.Recovery.SaveAsync(_draft, text);
@@ -304,7 +304,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo recuperar el borrador:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("main.msg.recoverDraftError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -381,7 +381,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(this,
-                "No se pudo iniciar WebView2. Asegúrate de tener el runtime de WebView2 instalado.\n\nDetalle: " + ex.Message,
+                Loc.T("main.msg.webviewInitError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -621,7 +621,7 @@ public partial class MainWindow : Window
     {
         var label = new TextBlock
         {
-            Text = string.IsNullOrWhiteSpace(node.Text) ? "(sin título)" : node.Text,
+            Text = string.IsNullOrWhiteSpace(node.Text) ? Loc.T("main.outline.untitled") : node.Text,
             TextTrimming = TextTrimming.CharacterEllipsis,
             FontSize = node.Level switch { 1 => 14, 2 => 13, 3 => 12.5, _ => 12 },
             FontWeight = node.Level <= 2 ? FontWeights.SemiBold : FontWeights.Normal
@@ -631,7 +631,7 @@ public partial class MainWindow : Window
             Header = label,
             Tag = node,
             IsExpanded = true,
-            ToolTip = $"Línea {node.LineNumber} · H{node.Level}"
+            ToolTip = Loc.T("main.outline.tooltip", node.LineNumber, node.Level)
         };
         foreach (var child in node.Children) item.Items.Add(BuildOutlineItem(child));
         return item;
@@ -678,19 +678,19 @@ public partial class MainWindow : Window
 
     private void UpdateStatus()
     {
-        StatusPath.Text = _document.IsUntitled ? "Sin guardar" : _document.FilePath!;
-        StatusDirty.Text = _document.IsDirty ? "Modificado" : "Guardado";
-        Title = _document.DisplayName + " — MarkLocal";
+        StatusPath.Text = _document.IsUntitled ? Loc.T("main.status.unsaved") : _document.FilePath!;
+        StatusDirty.Text = _document.IsDirty ? Loc.T("main.status.modified") : Loc.T("main.status.saved");
+        Title = Loc.T("main.window.title", _document.DisplayName);
 
         string text = _document.Content ?? string.Empty;
-        StatusChars.Text = $"{text.Length} caracteres";
-        StatusWords.Text = $"{CountWords(text)} palabras";
+        StatusChars.Text = Loc.T("main.status.chars", text.Length);
+        StatusWords.Text = Loc.T("main.status.words", CountWords(text));
         StatusEncoding.Text = _document.EncodingName + " · " + (_document.LineEnding == LineEnding.CRLF ? "CRLF" : "LF");
         StatusMode.Text = _viewMode switch
         {
-            ViewMode.Editor => "Edición",
-            ViewMode.Reader => "Lectura",
-            _ => "Dividido"
+            ViewMode.Editor => Loc.T("main.mode.editor"),
+            ViewMode.Reader => Loc.T("main.mode.reader"),
+            _ => Loc.T("main.mode.split")
         };
         UpdateCaretStatus();
     }
@@ -698,7 +698,7 @@ public partial class MainWindow : Window
     private void UpdateCaretStatus()
     {
         var caret = Editor.TextArea.Caret.Position;
-        StatusLineCol.Text = $"Lín {caret.Line}, Col {caret.Column}";
+        StatusLineCol.Text = Loc.T("main.status.lineCol", caret.Line, caret.Column);
     }
 
     private static int CountWords(string text)
@@ -708,8 +708,7 @@ public partial class MainWindow : Window
         return text.Split(separators, StringSplitOptions.RemoveEmptyEntries).Length;
     }
 
-    private static string GetWelcomeMarkdown() =>
-        "# Bienvenido a MarkLocal\n\nEscribe **Markdown** a la izquierda y verás la _previsualización_ a la derecha.\n\n- Edita y guarda con `Ctrl+S`.\n- Cambia de modo desde el menú **Ver**.\n- Inserta imágenes desde **Formato → Insertar imagen** o arrastrándolas al editor.\n\n> Local, ligero y sin pelearse con la herramienta.\n\n```csharp\nConsole.WriteLine(\"Hola Markdown\");\n```\n";
+    private static string GetWelcomeMarkdown() => Loc.T("main.welcome");
 
     private async void OnNewClicked(object sender, RoutedEventArgs e) => await NewDocumentAsync();
     private async void OnOpenClicked(object sender, RoutedEventArgs e) => await OpenDocumentAsync();
@@ -721,7 +720,7 @@ public partial class MainWindow : Window
     {
         if (!_document.IsDirty) return true;
         var result = MessageBox.Show(this,
-            $"El documento \"{_document.DisplayName.TrimEnd('*').Trim()}\" tiene cambios sin guardar. ¿Deseas guardarlos?",
+            Loc.T("main.msg.confirmDiscard", _document.DisplayName.TrimEnd('*').Trim()),
             "MarkLocal",
             MessageBoxButton.YesNoCancel,
             MessageBoxImage.Warning);
@@ -751,7 +750,7 @@ public partial class MainWindow : Window
         if (!await ConfirmDiscardChangesAsync()) return;
         var dialog = new Microsoft.Win32.OpenFileDialog
         {
-            Filter = "Markdown (*.md;*.markdown)|*.md;*.markdown|Texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*",
+            Filter = Loc.T("main.filter.open"),
             CheckFileExists = true
         };
         if (dialog.ShowDialog(this) == true)
@@ -777,7 +776,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo abrir el archivo:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, Loc.T("main.msg.openError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -791,9 +790,9 @@ public partial class MainWindow : Window
     {
         var dialog = new Microsoft.Win32.SaveFileDialog
         {
-            Filter = "Markdown (*.md)|*.md|Markdown (*.markdown)|*.markdown|Texto (*.txt)|*.txt",
+            Filter = Loc.T("main.filter.save"),
             DefaultExt = ".md",
-            FileName = _document.IsUntitled ? "Sin título.md" : Path.GetFileName(_document.FilePath!)
+            FileName = _document.IsUntitled ? Loc.T("main.file.untitledMd") : Path.GetFileName(_document.FilePath!)
         };
         if (dialog.ShowDialog(this) != true) return false;
         return await SaveToPathAsync(dialog.FileName);
@@ -818,7 +817,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo guardar el archivo:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, Loc.T("main.msg.saveError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
             return false;
         }
     }
@@ -829,7 +828,7 @@ public partial class MainWindow : Window
         var recent = _app.Recent.GetAll();
         if (recent.Count == 0)
         {
-            RecentMenu.Items.Add(new MenuItem { Header = "(sin elementos recientes)", IsEnabled = false });
+            RecentMenu.Items.Add(new MenuItem { Header = Loc.T("main.recent.empty"), IsEnabled = false });
             return;
         }
         foreach (var path in recent)
@@ -839,7 +838,7 @@ public partial class MainWindow : Window
             RecentMenu.Items.Add(item);
         }
         RecentMenu.Items.Add(new Separator());
-        var clear = new MenuItem { Header = "Limpiar lista" };
+        var clear = new MenuItem { Header = Loc.T("main.recent.clear") };
         clear.Click += (_, _) =>
         {
             _app.Settings.Settings.RecentFiles.Clear();
@@ -853,7 +852,7 @@ public partial class MainWindow : Window
     {
         if (!File.Exists(path))
         {
-            MessageBox.Show(this, "El archivo ya no existe y se quita de la lista.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("main.msg.recentMissing"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             _app.Recent.Remove(path);
             BuildRecentMenu();
             return;
@@ -868,7 +867,7 @@ public partial class MainWindow : Window
         {
             Filter = "HTML (*.html)|*.html",
             DefaultExt = ".html",
-            FileName = (_document.IsUntitled ? "Sin título" : Path.GetFileNameWithoutExtension(_document.FilePath!)) + ".html"
+            FileName = (_document.IsUntitled ? Loc.T("main.file.untitled") : Path.GetFileNameWithoutExtension(_document.FilePath!)) + ".html"
         };
         if (dialog.ShowDialog(this) != true) return;
         try
@@ -879,11 +878,11 @@ public partial class MainWindow : Window
                 dialog.FileName,
                 App.ResolveTheme(_app.Settings.Settings.Theme),
                 _app.Settings.Settings.PreviewFontSize * _previewFontScale);
-            MessageBox.Show(this, "Exportación completada.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("main.msg.exportHtmlDone"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo exportar a HTML:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, Loc.T("main.msg.exportHtmlError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -896,7 +895,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo abrir el diálogo de impresión:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Loc.T("main.msg.printError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -904,7 +903,7 @@ public partial class MainWindow : Window
     {
         if (!_previewReady)
         {
-            MessageBox.Show(this, "La vista previa aún no está lista. Espera un instante e inténtalo de nuevo.",
+            MessageBox.Show(this, Loc.T("main.msg.previewNotReady"),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -913,7 +912,7 @@ public partial class MainWindow : Window
         {
             Filter = "PDF (*.pdf)|*.pdf",
             DefaultExt = ".pdf",
-            FileName = (_document.IsUntitled ? "Sin título" : Path.GetFileNameWithoutExtension(_document.FilePath!)) + ".pdf"
+            FileName = (_document.IsUntitled ? Loc.T("main.file.untitled") : Path.GetFileNameWithoutExtension(_document.FilePath!)) + ".pdf"
         };
         if (dialog.ShowDialog(this) != true) return;
 
@@ -923,7 +922,7 @@ public partial class MainWindow : Window
         {
             await ExportToPdfAsync(dialog.FileName);
             var result = MessageBox.Show(this,
-                $"PDF generado en:\n{dialog.FileName}\n\n¿Quieres abrirlo ahora?",
+                Loc.T("main.msg.pdfDone", dialog.FileName),
                 "MarkLocal", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
@@ -932,7 +931,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo exportar a PDF:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(this, Loc.T("main.msg.exportPdfError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {
@@ -961,7 +960,7 @@ public partial class MainWindow : Window
         if (!ok)
         {
             SchedulePreviewRender(immediate: true);
-            throw new InvalidOperationException("La vista previa no se pudo cargar a tiempo para generar el PDF.");
+            throw new InvalidOperationException(Loc.T("main.err.pdfPreviewTimeout"));
         }
 
         try
@@ -980,7 +979,7 @@ public partial class MainWindow : Window
             bool result = await Preview.CoreWebView2.PrintToPdfAsync(targetPath, settings);
             if (!result)
             {
-                throw new InvalidOperationException("PrintToPdfAsync devolvió false.");
+                throw new InvalidOperationException(Loc.T("main.err.printToPdfFalse"));
             }
         }
         finally
@@ -1002,10 +1001,10 @@ public partial class MainWindow : Window
         dialog.Show();
     }
 
-    private void OnBoldClicked(object sender, RoutedEventArgs e) => WrapSelection("**", "**", "texto en negrita");
-    private void OnItalicClicked(object sender, RoutedEventArgs e) => WrapSelection("*", "*", "texto en cursiva");
-    private void OnStrikeClicked(object sender, RoutedEventArgs e) => WrapSelection("~~", "~~", "texto tachado");
-    private void OnInlineCodeClicked(object sender, RoutedEventArgs e) => WrapSelection("`", "`", "código");
+    private void OnBoldClicked(object sender, RoutedEventArgs e) => WrapSelection("**", "**", Loc.T("main.placeholder.bold"));
+    private void OnItalicClicked(object sender, RoutedEventArgs e) => WrapSelection("*", "*", Loc.T("main.placeholder.italic"));
+    private void OnStrikeClicked(object sender, RoutedEventArgs e) => WrapSelection("~~", "~~", Loc.T("main.placeholder.strike"));
+    private void OnInlineCodeClicked(object sender, RoutedEventArgs e) => WrapSelection("`", "`", Loc.T("main.placeholder.code"));
 
     private void OnCodeBlockClicked(object sender, RoutedEventArgs e)
     {
@@ -1032,7 +1031,7 @@ public partial class MainWindow : Window
     private void OnLinkClicked(object sender, RoutedEventArgs e)
     {
         string selected = Editor.SelectedText;
-        string label = string.IsNullOrWhiteSpace(selected) ? "texto del enlace" : selected;
+        string label = string.IsNullOrWhiteSpace(selected) ? Loc.T("main.placeholder.link") : selected;
         ReplaceSelection($"[{label}](https://)");
     }
 
@@ -1040,7 +1039,7 @@ public partial class MainWindow : Window
     {
         var dialog = new Microsoft.Win32.OpenFileDialog
         {
-            Filter = "Imágenes (*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.svg)|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.svg|Todos los archivos (*.*)|*.*"
+            Filter = Loc.T("main.filter.image")
         };
         if (dialog.ShowDialog(this) == true)
         {
@@ -1050,7 +1049,7 @@ public partial class MainWindow : Window
 
     private void OnTableClicked(object sender, RoutedEventArgs e)
     {
-        string table = "\n| Columna A | Columna B | Columna C |\n| --- | --- | --- |\n| dato | dato | dato |\n| dato | dato | dato |\n";
+        string table = Loc.T("main.snippet.table");
         InsertAtCaret(table);
     }
 
@@ -1259,11 +1258,8 @@ public partial class MainWindow : Window
             {
                 case UpdateCheckKind.NotConfigured:
                     var configure = MessageBox.Show(this,
-                        "No has configurado el feed de actualizaciones.\n\n" +
-                        "Para activarlo, abre %AppData%\\MarkLocal\\settings.json y añade:\n\n" +
-                        "  \"updateFeedUrl\": \"https://kairis.es/marklocal/updates.json\"\n\n" +
-                        "¿Quieres abrir esa carpeta ahora?",
-                        "Buscar actualizaciones", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        Loc.T("main.update.notConfigured"),
+                        Loc.T("main.update.captionCheck"), MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (configure == MessageBoxResult.Yes)
                     {
                         try
@@ -1275,22 +1271,21 @@ public partial class MainWindow : Window
                     break;
                 case UpdateCheckKind.UpToDate:
                     MessageBox.Show(this,
-                        $"Estás en la última versión disponible.\n\nVersión actual: {current.ToString(3)}",
-                        "MarkLocal está al día", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Loc.T("main.update.upToDate", current.ToString(3)),
+                        Loc.T("main.update.captionUpToDate"), MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case UpdateCheckKind.NewAvailable:
                     string notes = string.IsNullOrWhiteSpace(result.Info?.ReleaseNotesText)
                         ? string.Empty
-                        : "\n\nNovedades:\n" + result.Info!.ReleaseNotesText;
+                        : Loc.T("main.update.notes", result.Info!.ReleaseNotesText);
                     string download = result.Info?.DownloadPageUrl ?? result.Info?.ReleaseNotesUrl ?? string.Empty;
                     var open = MessageBox.Show(this,
-                        $"Hay una versión nueva disponible.\n\n" +
-                        $"Tienes: {current.ToString(3)}\n" +
-                        $"Nueva: {result.RemoteVersion}{notes}\n\n" +
-                        (string.IsNullOrEmpty(download)
-                            ? "Visita kairis.es para descargarla."
-                            : "¿Quieres abrir la página de descarga ahora?"),
-                        "Actualización disponible",
+                        Loc.T("main.update.newAvailable",
+                            current.ToString(3), result.RemoteVersion, notes,
+                            string.IsNullOrEmpty(download)
+                                ? Loc.T("main.update.visitSite")
+                                : Loc.T("main.update.openDownloadPage")),
+                        Loc.T("main.update.captionAvailable"),
                         string.IsNullOrEmpty(download) ? MessageBoxButton.OK : MessageBoxButton.YesNo,
                         MessageBoxImage.Information);
                     if (open == MessageBoxResult.Yes && !string.IsNullOrEmpty(download))
@@ -1301,19 +1296,19 @@ public partial class MainWindow : Window
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(this, "No se pudo abrir el navegador:\n" + ex.Message,
+                            MessageBox.Show(this, Loc.T("main.msg.openBrowserError", ex.Message),
                                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                     }
                     break;
                 case UpdateCheckKind.InvalidFeed:
                     MessageBox.Show(this,
-                        "El feed de actualizaciones no devolvió datos válidos:\n" + result.Message,
+                        Loc.T("main.update.invalidFeed", result.Message),
                         "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
                     break;
                 case UpdateCheckKind.Error:
                     MessageBox.Show(this,
-                        "No se pudo comprobar actualizaciones:\n" + result.Message,
+                        Loc.T("main.update.checkError", result.Message),
                         "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
                     break;
             }
@@ -1327,16 +1322,8 @@ public partial class MainWindow : Window
     private void OnAboutClicked(object sender, RoutedEventArgs e)
     {
         string version = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.1.0";
-        string text =
-            $"MarkLocal v{version}\n" +
-            "Editor y visor Markdown local para Windows.\n\n" +
-            "Creado por Alfonso Sanz López\n" +
-            "Kairis · kairis.es\n\n" +
-            "Código abierto (MIT):\n" +
-            "github.com/alfonsosanzme/marklocal\n\n" +
-            "Local-first, ligero y sin telemetría.\n" +
-            "Desarrollado con Claude Code (Anthropic).";
-        MessageBox.Show(this, text, "Acerca de MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+        string text = Loc.T("main.about.text", version);
+        MessageBox.Show(this, text, Loc.T("main.about.caption"), MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -1638,7 +1625,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo insertar la imagen:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Loc.T("main.msg.insertImageError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -1843,8 +1830,8 @@ public partial class MainWindow : Window
         if (FocusExitHintText != null)
         {
             FocusExitHintText.Text = full
-                ? "Pantalla completa · Esc para salir"
-                : "Modo foco · F11 o Esc para salir";
+                ? Loc.T("main.focus.fullHint")
+                : Loc.T("main.focus.simpleHint");
         }
         if (any) Editor.Focus();
     }
@@ -1915,13 +1902,13 @@ public partial class MainWindow : Window
                 url = _app.Images.BuildRelativePath(_document.DocumentDirectory!, target);
             }
 
-            string md = _app.Images.BuildMarkdownImageReference("imagen pegada", url);
+            string md = _app.Images.BuildMarkdownImageReference(Loc.T("main.image.pastedAlt"), url);
             InsertAtCaret(md);
             return true;
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo pegar la imagen:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Loc.T("main.msg.pasteImageError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
     }
@@ -1940,7 +1927,7 @@ public partial class MainWindow : Window
         var templates = _app.Templates.GetAvailable();
         if (templates.Count == 0)
         {
-            TemplatesMenu.Items.Add(new MenuItem { Header = "(sin plantillas)", IsEnabled = false });
+            TemplatesMenu.Items.Add(new MenuItem { Header = Loc.T("main.templates.empty"), IsEnabled = false });
         }
         else
         {
@@ -1952,7 +1939,7 @@ public partial class MainWindow : Window
             }
         }
         TemplatesMenu.Items.Add(new Separator());
-        var openFolder = new MenuItem { Header = "Abrir carpeta de plantillas..." };
+        var openFolder = new MenuItem { Header = Loc.T("main.templates.openFolder") };
         openFolder.Click += (_, _) =>
         {
             try
@@ -1962,13 +1949,13 @@ public partial class MainWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "No se pudo abrir la carpeta de plantillas:\n" + ex.Message,
+                MessageBox.Show(this, Loc.T("main.msg.openTemplatesFolderError", ex.Message),
                     "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         };
         TemplatesMenu.Items.Add(openFolder);
 
-        var reload = new MenuItem { Header = "Recargar plantillas" };
+        var reload = new MenuItem { Header = Loc.T("main.templates.reload") };
         reload.Click += (_, _) => BuildTemplatesMenu();
         TemplatesMenu.Items.Add(reload);
     }
@@ -1977,7 +1964,7 @@ public partial class MainWindow : Window
     {
         if (!File.Exists(template.Path))
         {
-            MessageBox.Show(this, "La plantilla ya no existe.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Loc.T("main.msg.templateMissing"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
             BuildTemplatesMenu();
             return;
         }
@@ -1998,7 +1985,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo cargar la plantilla:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("main.msg.templateLoadError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -2014,10 +2001,10 @@ public partial class MainWindow : Window
     }
 
     private void OnInsertCalloutNoteClicked(object sender, RoutedEventArgs e)
-        => InsertAtCaret("\n> [!NOTE]\n> Texto de la nota.\n\n");
+        => InsertAtCaret(Loc.T("main.snippet.calloutNote"));
 
     private void OnInsertCalloutWarningClicked(object sender, RoutedEventArgs e)
-        => InsertAtCaret("\n> [!WARNING]\n> Texto del aviso.\n\n");
+        => InsertAtCaret(Loc.T("main.snippet.calloutWarning"));
 
     private void OnInsertTocClicked(object sender, RoutedEventArgs e)
         => InsertAtCaret("\n[TOC]\n\n");
@@ -2114,13 +2101,13 @@ public partial class MainWindow : Window
             }
             else
             {
-                MessageBox.Show(this, "Guarda primero el documento o abre una carpeta de trabajo.",
+                MessageBox.Show(this, Loc.T("main.msg.saveOrOpenFolder"),
                     "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo abrir el Explorador:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("main.msg.openExplorerError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -2149,7 +2136,7 @@ public partial class MainWindow : Window
         string? folder = _document.DocumentDirectory;
         if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
         {
-            MessageBox.Show(this, "Guarda primero el documento para poder abrir su carpeta.",
+            MessageBox.Show(this, Loc.T("main.msg.saveFirstForFolder"),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -2161,7 +2148,7 @@ public partial class MainWindow : Window
         string? folder = _document.DocumentDirectory ?? _app.Workspace.RootPath;
         if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
         {
-            MessageBox.Show(this, "Guarda primero el documento o abre una carpeta de trabajo.",
+            MessageBox.Show(this, Loc.T("main.msg.saveOrOpenFolder"),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -2171,7 +2158,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo abrir la carpeta:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("main.msg.openFolderError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -2180,7 +2167,7 @@ public partial class MainWindow : Window
     {
         var dialog = new Microsoft.Win32.OpenFolderDialog
         {
-            Title = "Selecciona la carpeta de trabajo"
+            Title = Loc.T("main.dlg.selectWorkspace")
         };
         if (!string.IsNullOrEmpty(_app.Workspace.RootPath))
         {
@@ -2215,7 +2202,7 @@ public partial class MainWindow : Window
         string? parent = Path.GetDirectoryName(_app.Workspace.RootPath!);
         if (string.IsNullOrEmpty(parent) || !Directory.Exists(parent))
         {
-            MessageBox.Show(this, "Ya estás en la raíz de la unidad.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("main.msg.atDriveRoot"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         OpenWorkspace(parent);
@@ -2225,7 +2212,7 @@ public partial class MainWindow : Window
     {
         if (!_app.Workspace.Open(folderPath))
         {
-            MessageBox.Show(this, "No se pudo abrir la carpeta:\n" + folderPath,
+            MessageBox.Show(this, Loc.T("main.msg.openFolderError", folderPath),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -2241,7 +2228,7 @@ public partial class MainWindow : Window
         {
             WorkspaceRootLabel.Text = "";
             WorkspaceRootLabel.ToolTip = null;
-            WorkspaceEmptyHint.Text = "No hay ninguna carpeta abierta.";
+            WorkspaceEmptyHint.Text = Loc.T("main.ws.noFolder");
             WorkspaceEmptyPanel.Visibility = Visibility.Visible;
             WorkspaceRefreshButton.IsEnabled = false;
             WorkspaceCloseButton.IsEnabled = false;
@@ -2253,8 +2240,8 @@ public partial class MainWindow : Window
         var root = _app.Workspace.BuildRoot();
         if (root == null)
         {
-            WorkspaceRootLabel.Text = "(no accesible)";
-            WorkspaceEmptyHint.Text = "No se pudo leer la carpeta.";
+            WorkspaceRootLabel.Text = Loc.T("main.ws.inaccessible");
+            WorkspaceEmptyHint.Text = Loc.T("main.ws.readError");
             WorkspaceEmptyPanel.Visibility = Visibility.Visible;
             WorkspaceRefreshButton.IsEnabled = false;
             WorkspaceCloseButton.IsEnabled = true;
@@ -2265,7 +2252,7 @@ public partial class MainWindow : Window
         WorkspaceRootLabel.ToolTip = root.FullPath;
         if (root.Children.Count == 0)
         {
-            WorkspaceEmptyHint.Text = "Carpeta vacía (no hay .md, .markdown, .txt ni imágenes).";
+            WorkspaceEmptyHint.Text = Loc.T("main.ws.emptyFolder");
             WorkspaceEmptyPanel.Visibility = Visibility.Visible;
         }
         else
@@ -2293,14 +2280,14 @@ public partial class MainWindow : Window
         {
             item.FontWeight = FontWeights.SemiBold;
             // Placeholder para que aparezca el expander; los hijos se cargan al expandir.
-            item.Items.Add(new TreeViewItem { Header = "Cargando..." });
+            item.Items.Add(new TreeViewItem { Header = Loc.T("main.ws.loading") });
             item.Expanded += OnWorkspaceFolderExpanded;
 
             var ctx = new ContextMenu();
-            var setRoot = new MenuItem { Header = "Establecer como raíz del espacio de trabajo" };
+            var setRoot = new MenuItem { Header = Loc.T("main.ws.setRoot") };
             setRoot.Click += (_, _) => OpenWorkspace(node.FullPath);
             ctx.Items.Add(setRoot);
-            var openExplorer = new MenuItem { Header = "Abrir en el Explorador" };
+            var openExplorer = new MenuItem { Header = Loc.T("main.ws.openInExplorer") };
             openExplorer.Click += (_, _) =>
             {
                 try { Process.Start(new ProcessStartInfo(node.FullPath) { UseShellExecute = true }); } catch { }
@@ -2339,7 +2326,7 @@ public partial class MainWindow : Window
         {
             item.Items.Add(new TreeViewItem
             {
-                Header = "(vacía)",
+                Header = Loc.T("main.ws.empty"),
                 IsEnabled = false,
                 FontStyle = FontStyles.Italic
             });
@@ -2364,7 +2351,7 @@ public partial class MainWindow : Window
             if (_document.IsUntitled)
             {
                 MessageBox.Show(this,
-                    "Guarda primero el documento para poder insertar imágenes con ruta relativa.",
+                    Loc.T("main.msg.saveFirstForImage"),
                     "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }

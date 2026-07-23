@@ -12,6 +12,7 @@ namespace MarkLocal.Views;
 public partial class SettingsWindow : Window
 {
     private readonly SettingsService _settings;
+    private string _initialLanguage = Loc.AutoLanguage;
 
     public string? RequestOpenInEditorPath { get; private set; }
 
@@ -21,22 +22,22 @@ public partial class SettingsWindow : Window
         _settings = settings;
         LoadFromSettings();
         RefreshAssociationStatus();
-        ConfigPathHint.Text = "Estos ajustes se guardan en: " + _settings.ConfigFilePath;
+        ConfigPathHint.Text = Loc.T("views.settings.configPathHint", _settings.ConfigFilePath);
     }
 
     private void RefreshAssociationStatus()
     {
         bool associated = WindowsIntegration.IsAssociated();
         AssociationStatus.Text = associated
-            ? "Estado actual: los archivos .md/.markdown abren con MarkLocal."
-            : "Estado actual: los archivos .md/.markdown no abren con MarkLocal.";
+            ? Loc.T("views.settings.assoc.on")
+            : Loc.T("views.settings.assoc.off");
         AssociateButton.IsEnabled = !associated;
         DisassociateButton.IsEnabled = associated;
 
         bool shellNew = WindowsIntegration.IsShellNewEnabled();
         ShellNewStatus.Text = shellNew
-            ? "Estado actual: el menú \"Nuevo\" del Explorador incluye \"Nuevo Markdown\"."
-            : "Estado actual: el menú \"Nuevo\" del Explorador NO incluye \"Nuevo Markdown\".";
+            ? Loc.T("views.settings.shellNew.on")
+            : Loc.T("views.settings.shellNew.off");
         EnableShellNewButton.IsEnabled = !shellNew;
         DisableShellNewButton.IsEnabled = shellNew;
     }
@@ -46,11 +47,11 @@ public partial class SettingsWindow : Window
         try
         {
             WindowsIntegration.Associate();
-            MessageBox.Show(this, "Asociación creada. Puede que necesites cerrar y abrir el explorador para verlo.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("views.settings.assoc.created"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo asociar:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Loc.T("views.settings.assoc.createError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         RefreshAssociationStatus();
     }
@@ -60,11 +61,11 @@ public partial class SettingsWindow : Window
         try
         {
             WindowsIntegration.Disassociate();
-            MessageBox.Show(this, "Asociación retirada para tu usuario.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("views.settings.assoc.removed"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo retirar la asociación:\n" + ex.Message, "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Loc.T("views.settings.assoc.removeError", ex.Message), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         RefreshAssociationStatus();
     }
@@ -83,14 +84,12 @@ public partial class SettingsWindow : Window
                 System.IO.File.WriteAllText(templatePath, "# Nuevo documento\n\n", new UTF8Encoding(false));
             }
             WindowsIntegration.EnableShellNew(templatePath);
-            MessageBox.Show(this,
-                "Listo. En el menú contextual del Explorador → \"Nuevo\" aparecerá ahora \"Documento Markdown\".\n\n" +
-                "Si no lo ves de inmediato, cierra y abre una nueva ventana del Explorador.",
+            MessageBox.Show(this, Loc.T("views.settings.shellNew.enabledBody"),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo activar:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("views.settings.shellNew.enableError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         RefreshAssociationStatus();
@@ -101,12 +100,12 @@ public partial class SettingsWindow : Window
         try
         {
             WindowsIntegration.DisableShellNew();
-            MessageBox.Show(this, "\"Nuevo Markdown\" retirado del menú contextual del Explorador.",
+            MessageBox.Show(this, Loc.T("views.settings.shellNew.disabledBody"),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo desactivar:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("views.settings.shellNew.disableError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         RefreshAssociationStatus();
@@ -134,6 +133,19 @@ public partial class SettingsWindow : Window
         AllowHtmlCheck.IsChecked = s.AllowInlineHtml;
         DebounceBox.Text = s.PreviewDebounceMs.ToString(CultureInfo.InvariantCulture);
         CustomCssBox.Text = s.CustomCssPath ?? string.Empty;
+
+        _initialLanguage = string.IsNullOrWhiteSpace(s.Language) ? Loc.AutoLanguage : s.Language;
+        LanguageCombo.SelectedIndex = 0;
+        for (int i = 0; i < LanguageCombo.Items.Count; i++)
+        {
+            if (LanguageCombo.Items[i] is System.Windows.Controls.ComboBoxItem item
+                && item.Tag is string code
+                && string.Equals(code, _initialLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                LanguageCombo.SelectedIndex = i;
+                break;
+            }
+        }
     }
 
     private void OnAccept(object sender, RoutedEventArgs e)
@@ -162,6 +174,16 @@ public partial class SettingsWindow : Window
         }
         s.CustomCssPath = string.IsNullOrWhiteSpace(CustomCssBox.Text) ? null : CustomCssBox.Text.Trim();
 
+        string newLanguage = (LanguageCombo.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? Loc.AutoLanguage;
+        s.Language = newLanguage;
+        if (!string.Equals(newLanguage, _initialLanguage, StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show(this,
+                Loc.T("views.settings.langRestartBody"),
+                Loc.T("views.settings.langRestartTitle"),
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         DialogResult = true;
         Close();
     }
@@ -170,7 +192,7 @@ public partial class SettingsWindow : Window
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Filter = "Hojas de estilo CSS (*.css)|*.css|Todos los archivos (*.*)|*.*",
+            Filter = Loc.T("views.settings.customCss.filter"),
             CheckFileExists = true
         };
         if (!string.IsNullOrWhiteSpace(CustomCssBox.Text))
@@ -192,7 +214,7 @@ public partial class SettingsWindow : Window
     {
         if (string.IsNullOrWhiteSpace(CustomCssBox.Text) || !File.Exists(CustomCssBox.Text))
         {
-            MessageBox.Show(this, "Primero indica un archivo CSS existente.", "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, Loc.T("views.settings.customCss.needFile"), "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         RequestOpenInEditorPath = CustomCssBox.Text;
@@ -205,7 +227,7 @@ public partial class SettingsWindow : Window
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Filter = "Hojas de estilo CSS (*.css)|*.css",
+            Filter = Loc.T("views.settings.customCss.filterSaveOnly"),
             DefaultExt = ".css",
             FileName = "marklocal-custom.css"
         };
@@ -214,13 +236,12 @@ public partial class SettingsWindow : Window
         {
             File.WriteAllText(dlg.FileName, BuildCssTemplate(), new UTF8Encoding(false));
             CustomCssBox.Text = dlg.FileName;
-            MessageBox.Show(this,
-                "Plantilla creada. Pulsa \"Guardar\" para aplicarla, o \"Abrir en el editor\" para editarla aquí mismo.",
+            MessageBox.Show(this, Loc.T("views.settings.customCss.templateCreated"),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, "No se pudo crear la plantilla:\n" + ex.Message,
+            MessageBox.Show(this, Loc.T("views.settings.customCss.createError", ex.Message),
                 "MarkLocal", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }

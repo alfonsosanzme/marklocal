@@ -37,6 +37,7 @@ public partial class App : Application
         WebView2UserDataDirectory = webView2Dir;
 
         Settings = new SettingsService(settingsDir);
+        Loc.Initialize(Settings.Settings.Language);
         Documents = new DocumentService();
         Markdown = new MarkdownService(Settings);
         Preview = new PreviewService(Settings);
@@ -60,7 +61,7 @@ public partial class App : Application
         switch (parsed.Action)
         {
             case CliRunner.Action.ShowHelp:
-                MessageBox.Show(CliRunner.GetHelpText(), "MarkLocal — Ayuda", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(CliRunner.GetHelpText(), Loc.T("core.app.helpTitle"), MessageBoxButton.OK, MessageBoxImage.Information);
                 Shutdown(0);
                 return;
             case CliRunner.Action.ShowVersion:

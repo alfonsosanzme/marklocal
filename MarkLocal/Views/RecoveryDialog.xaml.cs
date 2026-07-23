@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MarkLocal.Core;
 using MarkLocal.Models;
 
 namespace MarkLocal.Views;
@@ -25,9 +26,9 @@ public partial class RecoveryDialog : Window
         DraftList.ItemsSource = _items;
         if (_items.Count > 0) DraftList.SelectedIndex = 0;
         HeaderText.Text = _items.Count == 1
-            ? "Se encontró un borrador sin guardar de una sesión anterior."
-            : $"Se encontraron {_items.Count} borradores sin guardar de sesiones anteriores.";
-        FolderHint.Text = "Los borradores se almacenan en: " + draftsDirectory;
+            ? Loc.T("views.recovery.header.single")
+            : Loc.T("views.recovery.header.multiple", _items.Count);
+        FolderHint.Text = Loc.T("views.recovery.folderHint", draftsDirectory);
     }
 
     private void OnRecover(object sender, RoutedEventArgs e)
@@ -51,8 +52,8 @@ public partial class RecoveryDialog : Window
         }
         DraftList.SelectedIndex = 0;
         HeaderText.Text = _items.Count == 1
-            ? "Queda un borrador sin guardar."
-            : $"Quedan {_items.Count} borradores sin guardar.";
+            ? Loc.T("views.recovery.remaining.single")
+            : Loc.T("views.recovery.remaining.multiple", _items.Count);
     }
 
     private void OnDiscardAll(object sender, RoutedEventArgs e)
@@ -79,7 +80,7 @@ public partial class RecoveryDialog : Window
         public DraftSnapshot Snapshot { get; }
         public DraftViewModel(DraftSnapshot snapshot) { Snapshot = snapshot; }
         public string Title => string.IsNullOrWhiteSpace(Snapshot.Title)
-            ? (string.IsNullOrEmpty(Snapshot.OriginalPath) ? "Sin título" : Path.GetFileName(Snapshot.OriginalPath))
+            ? (string.IsNullOrEmpty(Snapshot.OriginalPath) ? Loc.T("views.recovery.untitled") : Path.GetFileName(Snapshot.OriginalPath))
             : Snapshot.Title!;
         public string LocalModifiedText => Snapshot.LastModifiedUtc.ToLocalTime().ToString("g");
         public string SizeText
@@ -92,7 +93,7 @@ public partial class RecoveryDialog : Window
             }
         }
         public string OriginalPathText => string.IsNullOrEmpty(Snapshot.OriginalPath)
-            ? "Documento sin guardar"
+            ? Loc.T("views.recovery.unsavedDocument")
             : Snapshot.OriginalPath!;
     }
 }

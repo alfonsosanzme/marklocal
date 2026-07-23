@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:local="clr-namespace:MarkLocal"
         Title="MarkLocal"
         Height="780"
         Width="1280"
@@ -15,85 +16,85 @@
         AllowDrop="True">
     <DockPanel LastChildFill="True">
         <Menu x:Name="MainMenu" DockPanel.Dock="Top">
-            <MenuItem Header="_Archivo">
-                <MenuItem Header="_Nuevo" Click="OnNewClicked" InputGestureText="Ctrl+N"/>
-                <MenuItem x:Name="TemplatesMenu" Header="Nuevo desde _plantilla"/>
-                <MenuItem Header="_Abrir..." Click="OnOpenClicked" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="Abrir _carpeta..." Click="OnOpenFolderClicked" InputGestureText="Ctrl+K Ctrl+O"/>
-                <MenuItem Header="C_errar carpeta" Click="OnCloseWorkspaceClicked"/>
-                <MenuItem x:Name="RecentMenu" Header="Abrir _recientes"/>
+            <MenuItem Header="{local:Loc ui.menu.file}">
+                <MenuItem Header="{local:Loc ui.menu.file.new}" Click="OnNewClicked" InputGestureText="Ctrl+N"/>
+                <MenuItem x:Name="TemplatesMenu" Header="{local:Loc ui.menu.file.newFromTemplate}"/>
+                <MenuItem Header="{local:Loc ui.menu.file.open}" Click="OnOpenClicked" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="{local:Loc ui.menu.file.openFolder}" Click="OnOpenFolderClicked" InputGestureText="Ctrl+K Ctrl+O"/>
+                <MenuItem Header="{local:Loc ui.menu.file.closeFolder}" Click="OnCloseWorkspaceClicked"/>
+                <MenuItem x:Name="RecentMenu" Header="{local:Loc ui.menu.file.openRecent}"/>
                 <Separator/>
-                <MenuItem Header="_Guardar" Click="OnSaveClicked" InputGestureText="Ctrl+S"/>
-                <MenuItem Header="Guardar _como..." Click="OnSaveAsClicked" InputGestureText="Ctrl+Shift+S"/>
+                <MenuItem Header="{local:Loc ui.menu.file.save}" Click="OnSaveClicked" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="{local:Loc ui.menu.file.saveAs}" Click="OnSaveAsClicked" InputGestureText="Ctrl+Shift+S"/>
                 <Separator/>
-                <MenuItem Header="_Exportar a HTML..." Click="OnExportHtmlClicked"/>
-                <MenuItem Header="Exportar a _PDF..." Click="OnExportPdfClicked" InputGestureText="Ctrl+Shift+P"/>
-                <MenuItem Header="_Imprimir..." Click="OnPrintClicked" InputGestureText="Ctrl+P"/>
+                <MenuItem Header="{local:Loc ui.menu.file.exportHtml}" Click="OnExportHtmlClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.file.exportPdf}" Click="OnExportPdfClicked" InputGestureText="Ctrl+Shift+P"/>
+                <MenuItem Header="{local:Loc ui.menu.file.print}" Click="OnPrintClicked" InputGestureText="Ctrl+P"/>
                 <Separator/>
-                <MenuItem Header="_Salir" Click="OnExitClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.file.exit}" Click="OnExitClicked"/>
             </MenuItem>
-            <MenuItem Header="_Editar">
-                <MenuItem Header="Deshacer" Click="OnUndoClicked" InputGestureText="Ctrl+Z"/>
-                <MenuItem Header="Rehacer" Click="OnRedoClicked" InputGestureText="Ctrl+Y"/>
+            <MenuItem Header="{local:Loc ui.menu.edit}">
+                <MenuItem Header="{local:Loc ui.menu.edit.undo}" Click="OnUndoClicked" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="{local:Loc ui.menu.edit.redo}" Click="OnRedoClicked" InputGestureText="Ctrl+Y"/>
                 <Separator/>
-                <MenuItem Header="Cortar" Click="OnCutClicked" InputGestureText="Ctrl+X"/>
-                <MenuItem Header="Copiar" Click="OnCopyClicked" InputGestureText="Ctrl+C"/>
-                <MenuItem Header="Pegar" Click="OnPasteClicked" InputGestureText="Ctrl+V"/>
+                <MenuItem Header="{local:Loc ui.menu.edit.cut}" Click="OnCutClicked" InputGestureText="Ctrl+X"/>
+                <MenuItem Header="{local:Loc ui.menu.edit.copy}" Click="OnCopyClicked" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="{local:Loc ui.menu.edit.paste}" Click="OnPasteClicked" InputGestureText="Ctrl+V"/>
                 <Separator/>
-                <MenuItem Header="Seleccionar todo" Click="OnSelectAllClicked" InputGestureText="Ctrl+A"/>
-                <MenuItem Header="Buscar / Reemplazar..." Click="OnFindClicked" InputGestureText="Ctrl+F"/>
+                <MenuItem Header="{local:Loc ui.menu.edit.selectAll}" Click="OnSelectAllClicked" InputGestureText="Ctrl+A"/>
+                <MenuItem Header="{local:Loc ui.menu.edit.findReplace}" Click="OnFindClicked" InputGestureText="Ctrl+F"/>
             </MenuItem>
-            <MenuItem Header="_Formato">
-                <MenuItem Header="Negrita" Click="OnBoldClicked" InputGestureText="Ctrl+B"/>
-                <MenuItem Header="Cursiva" Click="OnItalicClicked" InputGestureText="Ctrl+I"/>
-                <MenuItem Header="Tachado" Click="OnStrikeClicked"/>
-                <MenuItem Header="Código inline" Click="OnInlineCodeClicked"/>
-                <MenuItem Header="Bloque de código" Click="OnCodeBlockClicked" InputGestureText="Ctrl+Shift+C"/>
+            <MenuItem Header="{local:Loc ui.menu.format}">
+                <MenuItem Header="{local:Loc ui.menu.format.bold}" Click="OnBoldClicked" InputGestureText="Ctrl+B"/>
+                <MenuItem Header="{local:Loc ui.menu.format.italic}" Click="OnItalicClicked" InputGestureText="Ctrl+I"/>
+                <MenuItem Header="{local:Loc ui.menu.format.strike}" Click="OnStrikeClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.inlineCode}" Click="OnInlineCodeClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.codeBlock}" Click="OnCodeBlockClicked" InputGestureText="Ctrl+Shift+C"/>
                 <Separator/>
-                <MenuItem Header="Encabezado 1" Click="OnH1Clicked"/>
-                <MenuItem Header="Encabezado 2" Click="OnH2Clicked"/>
-                <MenuItem Header="Encabezado 3" Click="OnH3Clicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.h1}" Click="OnH1Clicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.h2}" Click="OnH2Clicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.h3}" Click="OnH3Clicked"/>
                 <Separator/>
-                <MenuItem Header="Lista con viñetas" Click="OnBulletListClicked"/>
-                <MenuItem Header="Lista numerada" Click="OnNumberedListClicked"/>
-                <MenuItem Header="Lista de tareas" Click="OnTaskListClicked" InputGestureText="Ctrl+Shift+L"/>
-                <MenuItem Header="Cita" Click="OnQuoteClicked"/>
-                <MenuItem Header="Regla horizontal" Click="OnHorizontalRuleClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.bulletList}" Click="OnBulletListClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.numberedList}" Click="OnNumberedListClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.taskList}" Click="OnTaskListClicked" InputGestureText="Ctrl+Shift+L"/>
+                <MenuItem Header="{local:Loc ui.menu.format.quote}" Click="OnQuoteClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.hr}" Click="OnHorizontalRuleClicked"/>
                 <Separator/>
-                <MenuItem Header="Insertar enlace..." Click="OnLinkClicked" InputGestureText="Ctrl+K"/>
-                <MenuItem Header="Insertar imagen..." Click="OnImageClicked"/>
-                <MenuItem Header="Insertar tabla básica" Click="OnTableClicked" InputGestureText="Ctrl+Alt+T"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertLink}" Click="OnLinkClicked" InputGestureText="Ctrl+K"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertImage}" Click="OnImageClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertTable}" Click="OnTableClicked" InputGestureText="Ctrl+Alt+T"/>
                 <Separator/>
-                <MenuItem Header="Insertar Front Matter YAML" Click="OnInsertFrontMatterClicked"/>
-                <MenuItem Header="Insertar callout (nota)" Click="OnInsertCalloutNoteClicked"/>
-                <MenuItem Header="Insertar callout (aviso)" Click="OnInsertCalloutWarningClicked"/>
-                <MenuItem Header="Insertar tabla de contenidos [TOC]" Click="OnInsertTocClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertFrontMatter}" Click="OnInsertFrontMatterClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertCalloutNote}" Click="OnInsertCalloutNoteClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertCalloutWarning}" Click="OnInsertCalloutWarningClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.format.insertToc}" Click="OnInsertTocClicked"/>
             </MenuItem>
-            <MenuItem Header="_Ver">
-                <MenuItem x:Name="ModeEditorItem" Header="Solo _editor" IsCheckable="True" Click="OnModeEditorClicked"/>
-                <MenuItem x:Name="ModeSplitItem" Header="_Dividido" IsCheckable="True" IsChecked="True" Click="OnModeSplitClicked"/>
-                <MenuItem x:Name="ModeReaderItem" Header="Solo _lectura" IsCheckable="True" Click="OnModeReaderClicked"/>
+            <MenuItem Header="{local:Loc ui.menu.view}">
+                <MenuItem x:Name="ModeEditorItem" Header="{local:Loc ui.menu.view.editorOnly}" IsCheckable="True" Click="OnModeEditorClicked"/>
+                <MenuItem x:Name="ModeSplitItem" Header="{local:Loc ui.menu.view.split}" IsCheckable="True" IsChecked="True" Click="OnModeSplitClicked"/>
+                <MenuItem x:Name="ModeReaderItem" Header="{local:Loc ui.menu.view.readerOnly}" IsCheckable="True" Click="OnModeReaderClicked"/>
                 <Separator/>
-                <MenuItem x:Name="OutlineToggleItem" Header="Mostrar es_quema" IsCheckable="True" IsChecked="True" Click="OnToggleOutlineClicked"/>
-                <MenuItem x:Name="WordWrapItem" Header="Ajuste de _línea" IsCheckable="True" IsChecked="True" Click="OnToggleWordWrapClicked"/>
-                <MenuItem x:Name="FocusModeItem" Header="Modo _foco" IsCheckable="True" Click="OnFocusModeClicked" InputGestureText="F11"/>
-                <MenuItem x:Name="FocusFullModeItem" Header="Foco a pantalla c_ompleta" IsCheckable="True" Click="OnFocusFullModeClicked" InputGestureText="Mayús+F11"/>
+                <MenuItem x:Name="OutlineToggleItem" Header="{local:Loc ui.menu.view.showOutline}" IsCheckable="True" IsChecked="True" Click="OnToggleOutlineClicked"/>
+                <MenuItem x:Name="WordWrapItem" Header="{local:Loc ui.menu.view.wordWrap}" IsCheckable="True" IsChecked="True" Click="OnToggleWordWrapClicked"/>
+                <MenuItem x:Name="FocusModeItem" Header="{local:Loc ui.menu.view.focus}" IsCheckable="True" Click="OnFocusModeClicked" InputGestureText="F11"/>
+                <MenuItem x:Name="FocusFullModeItem" Header="{local:Loc ui.menu.view.focusFull}" IsCheckable="True" Click="OnFocusFullModeClicked" InputGestureText="Shift+F11"/>
                 <Separator/>
-                <MenuItem Header="Aumentar tamaño" Click="OnZoomInClicked" InputGestureText="Ctrl++"/>
-                <MenuItem Header="Reducir tamaño" Click="OnZoomOutClicked" InputGestureText="Ctrl+-"/>
-                <MenuItem Header="Restaurar tamaño" Click="OnZoomResetClicked" InputGestureText="Ctrl+0"/>
+                <MenuItem Header="{local:Loc ui.menu.view.zoomIn}" Click="OnZoomInClicked" InputGestureText="Ctrl++"/>
+                <MenuItem Header="{local:Loc ui.menu.view.zoomOut}" Click="OnZoomOutClicked" InputGestureText="Ctrl+-"/>
+                <MenuItem Header="{local:Loc ui.menu.view.zoomReset}" Click="OnZoomResetClicked" InputGestureText="Ctrl+0"/>
                 <Separator/>
-                <MenuItem x:Name="ThemeLightItem" Header="Tema _claro" IsCheckable="True" Click="OnThemeLightClicked"/>
-                <MenuItem x:Name="ThemeDarkItem" Header="Tema _oscuro" IsCheckable="True" Click="OnThemeDarkClicked"/>
-                <MenuItem x:Name="ThemeSystemItem" Header="Seguir el _sistema" IsCheckable="True" IsChecked="True" Click="OnThemeSystemClicked"/>
+                <MenuItem x:Name="ThemeLightItem" Header="{local:Loc ui.menu.view.themeLight}" IsCheckable="True" Click="OnThemeLightClicked"/>
+                <MenuItem x:Name="ThemeDarkItem" Header="{local:Loc ui.menu.view.themeDark}" IsCheckable="True" Click="OnThemeDarkClicked"/>
+                <MenuItem x:Name="ThemeSystemItem" Header="{local:Loc ui.menu.view.themeSystem}" IsCheckable="True" IsChecked="True" Click="OnThemeSystemClicked"/>
             </MenuItem>
-            <MenuItem Header="_Herramientas">
-                <MenuItem Header="Preferencias..." Click="OnPreferencesClicked"/>
+            <MenuItem Header="{local:Loc ui.menu.tools}">
+                <MenuItem Header="{local:Loc ui.menu.tools.preferences}" Click="OnPreferencesClicked"/>
             </MenuItem>
-            <MenuItem Header="A_yuda">
-                <MenuItem Header="Buscar actualizaciones..." Click="OnCheckUpdatesClicked"/>
+            <MenuItem Header="{local:Loc ui.menu.help}">
+                <MenuItem Header="{local:Loc ui.menu.help.checkUpdates}" Click="OnCheckUpdatesClicked"/>
                 <Separator/>
-                <MenuItem Header="Acerca de MarkLocal" Click="OnAboutClicked"/>
+                <MenuItem Header="{local:Loc ui.menu.help.about}" Click="OnAboutClicked"/>
             </MenuItem>
         </Menu>
 
@@ -102,69 +103,73 @@
                 <ToggleButton x:Name="ToolbarModeEditor"
                               ToolBar.OverflowMode="Never"
                               Click="OnModeEditorClicked"
-                              ToolTip="Solo editor"
-                              MinWidth="78">Editor</ToggleButton>
+                              ToolTip="{local:Loc ui.toolbar.editor.tip}"
+                              MinWidth="78" Content="{local:Loc ui.toolbar.editor}"/>
                 <ToggleButton x:Name="ToolbarModeSplit"
                               ToolBar.OverflowMode="Never"
                               Click="OnModeSplitClicked"
-                              ToolTip="Dividido (editor + preview)"
-                              MinWidth="78">Dividido</ToggleButton>
+                              ToolTip="{local:Loc ui.toolbar.split.tip}"
+                              MinWidth="78" Content="{local:Loc ui.toolbar.split}"/>
                 <ToggleButton x:Name="ToolbarModeReader"
                               ToolBar.OverflowMode="Never"
                               Click="OnModeReaderClicked"
-                              ToolTip="Solo lectura"
-                              MinWidth="78">Lectura</ToggleButton>
+                              ToolTip="{local:Loc ui.toolbar.reader.tip}"
+                              MinWidth="78" Content="{local:Loc ui.toolbar.reader}"/>
                 <Separator ToolBar.OverflowMode="Never"/>
                 <ToggleButton x:Name="ToolbarOutlineToggle"
                               ToolBar.OverflowMode="Never"
                               Click="OnToggleOutlineFromToolbar"
-                              ToolTip="Mostrar u ocultar el panel lateral (esquema y carpetas)"
-                              MinWidth="78">☰ Esquema</ToggleButton>
+                              ToolTip="{local:Loc ui.toolbar.outline.tip}"
+                              MinWidth="78" Content="{local:Loc ui.toolbar.outline}"/>
                 <Separator ToolBar.OverflowMode="Never"/>
                 <Button ToolBar.OverflowMode="Never"
                         Click="OnRevealInExplorerClicked"
-                        ToolTip="Mostrar el archivo actual en el Explorador de Windows">🔍 Ver en Explorador</Button>
+                        ToolTip="{local:Loc ui.toolbar.reveal.tip}"
+                        Content="{local:Loc ui.toolbar.reveal}"/>
                 <Button ToolBar.OverflowMode="Never"
                         Click="OnOpenDocFolderAsWorkspaceClicked"
-                        ToolTip="Abrir la carpeta de este documento como espacio de trabajo (pestaña CARPETA)">📂 Abrir carpeta aquí</Button>
+                        ToolTip="{local:Loc ui.toolbar.openHere.tip}"
+                        Content="{local:Loc ui.toolbar.openHere}"/>
                 <Separator ToolBar.OverflowMode="Never"/>
                 <ToggleButton x:Name="ToolbarFocusMode"
                               ToolBar.OverflowMode="Never"
                               Click="OnFocusModeClicked"
-                              ToolTip="Modo foco: oculta paneles y menú (F11)">🎯 Foco</ToggleButton>
+                              ToolTip="{local:Loc ui.toolbar.focus.tip}"
+                              Content="{local:Loc ui.toolbar.focus}"/>
                 <ToggleButton x:Name="ToolbarFocusFullMode"
                               ToolBar.OverflowMode="Never"
                               Click="OnFocusFullModeClicked"
-                              ToolTip="Modo foco a pantalla completa (Mayús+F11)">⛶ Pantalla completa</ToggleButton>
+                              ToolTip="{local:Loc ui.toolbar.focusFull.tip}"
+                              Content="{local:Loc ui.toolbar.focusFull}"/>
             </ToolBar>
             <ToolBar x:Name="FormatToolBar" Band="1" BandIndex="0" ToolBarTray.IsLocked="True" Loaded="OnToolBarLoaded">
-                <Button ToolBar.OverflowMode="Never" Click="OnBoldClicked" ToolTip="Negrita (Ctrl+B)" MinWidth="32" FontWeight="Bold">B</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnItalicClicked" ToolTip="Cursiva (Ctrl+I)" MinWidth="32" FontStyle="Italic">I</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnStrikeClicked" ToolTip="Tachado" MinWidth="32">
+                <Button ToolBar.OverflowMode="Never" Click="OnBoldClicked" ToolTip="{local:Loc ui.fmt.bold.tip}" MinWidth="32" FontWeight="Bold">B</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnItalicClicked" ToolTip="{local:Loc ui.fmt.italic.tip}" MinWidth="32" FontStyle="Italic">I</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnStrikeClicked" ToolTip="{local:Loc ui.fmt.strike.tip}" MinWidth="32">
                     <TextBlock Text="S" TextDecorations="Strikethrough"/>
                 </Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnInlineCodeClicked" ToolTip="Código inline" MinWidth="32" FontFamily="Consolas">&lt;/&gt;</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnInlineCodeClicked" ToolTip="{local:Loc ui.fmt.inlineCode.tip}" MinWidth="32" FontFamily="Consolas">&lt;/&gt;</Button>
                 <Separator ToolBar.OverflowMode="Never"/>
-                <Button ToolBar.OverflowMode="Never" Click="OnH1Clicked" ToolTip="Encabezado 1" MinWidth="32">H1</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnH2Clicked" ToolTip="Encabezado 2" MinWidth="32">H2</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnH3Clicked" ToolTip="Encabezado 3" MinWidth="32">H3</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnH1Clicked" ToolTip="{local:Loc ui.fmt.h1.tip}" MinWidth="32">H1</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnH2Clicked" ToolTip="{local:Loc ui.fmt.h2.tip}" MinWidth="32">H2</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnH3Clicked" ToolTip="{local:Loc ui.fmt.h3.tip}" MinWidth="32">H3</Button>
                 <Separator ToolBar.OverflowMode="Never"/>
-                <Button ToolBar.OverflowMode="Never" Click="OnBulletListClicked" ToolTip="Lista con viñetas" MinWidth="32">•≡</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnNumberedListClicked" ToolTip="Lista numerada" MinWidth="32">1.≡</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnTaskListClicked" ToolTip="Lista de tareas (Ctrl+Mayús+L)" MinWidth="32">☑</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnQuoteClicked" ToolTip="Cita" MinWidth="32">❝</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnBulletListClicked" ToolTip="{local:Loc ui.fmt.bulletList.tip}" MinWidth="32">•≡</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnNumberedListClicked" ToolTip="{local:Loc ui.fmt.numberedList.tip}" MinWidth="32">1.≡</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnTaskListClicked" ToolTip="{local:Loc ui.fmt.taskList.tip}" MinWidth="32">☑</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnQuoteClicked" ToolTip="{local:Loc ui.fmt.quote.tip}" MinWidth="32">❝</Button>
                 <Separator ToolBar.OverflowMode="Never"/>
-                <Button ToolBar.OverflowMode="Never" Click="OnLinkClicked" ToolTip="Insertar enlace (Ctrl+K)" MinWidth="32">🔗</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnImageClicked" ToolTip="Insertar imagen" MinWidth="32">🖼</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnTableClicked" ToolTip="Insertar tabla (Ctrl+Alt+T)" MinWidth="32">▦</Button>
-                <Button ToolBar.OverflowMode="Never" Click="OnCodeBlockClicked" ToolTip="Bloque de código (Ctrl+Mayús+C)" MinWidth="36" FontFamily="Consolas">```</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnLinkClicked" ToolTip="{local:Loc ui.fmt.link.tip}" MinWidth="32">🔗</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnImageClicked" ToolTip="{local:Loc ui.fmt.image.tip}" MinWidth="32">🖼</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnTableClicked" ToolTip="{local:Loc ui.fmt.table.tip}" MinWidth="32">▦</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnCodeBlockClicked" ToolTip="{local:Loc ui.fmt.codeBlock.tip}" MinWidth="36" FontFamily="Consolas">```</Button>
             </ToolBar>
         </ToolBarTray>
 
         <StatusBar x:Name="MainStatusBar" DockPanel.Dock="Bottom" Height="26">
             <StatusBarItem x:Name="PortableIndicator" Visibility="Collapsed">
                 <Border Background="{DynamicResource AccentBrush}" Padding="6,1" CornerRadius="3">
-                    <TextBlock Text="MODO PORTABLE" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                    <TextBlock Text="{local:Loc ui.status.portable}" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
                 </Border>
             </StatusBarItem>
             <StatusBarItem>
@@ -219,7 +224,7 @@
                             BorderBrush="{DynamicResource DividerBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="10,6">
-                        <TextBlock Text="ESQUEMA"
+                        <TextBlock Text="{local:Loc ui.sidebar.outline}"
                                    FontWeight="SemiBold"
                                    FontSize="11"
                                    Foreground="{DynamicResource MutedForegroundBrush}"/>
@@ -241,7 +246,7 @@
                             </TreeView>
                         </ScrollViewer>
                         <TextBlock x:Name="OutlineEmptyHint"
-                                   Text="(El documento aún no tiene encabezados)"
+                                   Text="{local:Loc ui.sidebar.outlineEmpty}"
                                    Margin="14,12"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource MutedForegroundBrush}"
@@ -263,14 +268,14 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"
-                                       Text="EN ESTA CARPETA"
+                                       Text="{local:Loc ui.sidebar.siblings}"
                                        FontWeight="SemiBold"
                                        FontSize="11"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource MutedForegroundBrush}"/>
                             <Button Grid.Column="1"
                                     Content="🔍"
-                                    ToolTip="Abrir esta carpeta en el Explorador de Windows"
+                                    ToolTip="{local:Loc ui.sidebar.siblingsReveal.tip}"
                                     Padding="4,0"
                                     MinHeight="20"
                                     FontSize="11"
@@ -322,7 +327,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0"
-                                       Text="CARPETA"
+                                       Text="{local:Loc ui.sidebar.folder}"
                                        FontWeight="SemiBold"
                                        FontSize="11"
                                        VerticalAlignment="Center"
@@ -339,7 +344,7 @@
                             <Button x:Name="WorkspaceUpButton"
                                     Grid.Column="2"
                                     Content="↑"
-                                    ToolTip="Subir a la carpeta padre"
+                                    ToolTip="{local:Loc ui.sidebar.up.tip}"
                                     Padding="5,0"
                                     Margin="4,0,0,0"
                                     MinHeight="20"
@@ -348,7 +353,7 @@
                             <Button x:Name="WorkspaceRefreshButton"
                                     Grid.Column="3"
                                     Content="⟳"
-                                    ToolTip="Recargar el árbol de la carpeta"
+                                    ToolTip="{local:Loc ui.sidebar.refresh.tip}"
                                     Padding="5,0"
                                     Margin="4,0,0,0"
                                     MinHeight="20"
@@ -357,7 +362,7 @@
                             <Button x:Name="WorkspaceCloseButton"
                                     Grid.Column="4"
                                     Content="✕"
-                                    ToolTip="Cerrar la carpeta de trabajo"
+                                    ToolTip="{local:Loc ui.sidebar.close.tip}"
                                     Padding="5,0"
                                     Margin="4,0,0,0"
                                     MinHeight="20"
@@ -381,8 +386,8 @@
                                        TextWrapping="Wrap"
                                        Foreground="{DynamicResource MutedForegroundBrush}"
                                        FontStyle="Italic"
-                                       Text="No hay ninguna carpeta abierta."/>
-                            <Button Content="Abrir carpeta..."
+                                       Text="{local:Loc ui.sidebar.noFolder}"/>
+                            <Button Content="{local:Loc ui.sidebar.openFolderButton}"
                                     Click="OnOpenFolderClicked"
                                     Margin="0,8,0,0"
                                     HorizontalAlignment="Left"

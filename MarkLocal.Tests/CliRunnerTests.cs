@@ -5,6 +5,11 @@ namespace MarkLocal.Tests;
 
 public class CliRunnerTests
 {
+    public CliRunnerTests()
+    {
+        TestFactory.EnsureLocalization();
+    }
+
     [Fact]
     public void Parse_NoArgs_ReturnsShowUi()
     {
