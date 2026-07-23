@@ -124,8 +124,22 @@ Nada sale de tu equipo. Sin telemetría, sin cuentas, sin nube. El renderizado u
 
 ## El proyecto, en corto
 
-<!-- ENTREVISTA: pendiente de completar con las respuestas del autor -->
-*Sección en preparación: una breve entrevista con el autor sobre el origen y el rumbo del proyecto.*
+Una breve conversación con el autor sobre el origen y el rumbo de MarkLocal.
+
+**¿Cuándo dijiste "necesito esta herramienta"?**
+Desde hace unos meses me he tenido que acostumbrar a trabajar con Markdown. Al principio no le veía mucho sentido, pero poco a poco entendí la ventaja de trasladar la información en el formato más limpio y liviano posible. Según iba desarrollando más proyectos —y, sobre todo, organizando en archivos de texto todo el contexto de esos proyectos— era obvio que había que pasar a Markdown. Busqué por internet y no encontré una solución gratuita apropiada para algo que me parecía simple. Así que decidí hacer una prueba.
+
+**¿Por qué local y sin nube?**
+Porque lo que quería era ejecutar los archivos que tengo en local. Todas mis sesiones de trabajo son en local, y ya luego las sincronizo con GitHub, con mi servidor por SSH o lo que toque. La idea era un programa rápido y fluido para manejar la información. Por eso puse el esquema de los `.md` que hay en la misma carpeta del que estás viendo; por eso el modo foco y el modo de solo lectura, para que cuando trabajo con textos densos se vea todo claro; y por eso el botón para abrir en el Explorador la carpeta que estás explorando, para moverte por la documentación del entorno del archivo.
+
+**¿Cómo fue desarrollar con Claude Code?**
+Le describí mi problema y cómo quería que fuese el programa, y ya en la primera versión —el primer *one shot*— conseguí algo que estaba casi al nivel. Hubo que pegarse con varias iteraciones y especificaciones más técnicas, y estuve varios meses con una beta, pero lo que me sorprendió fue que casi a la primera funcionó. Era la primera aplicación para Windows que hacía, y eso me abrió mil posibilidades.
+
+**¿Para quién es?**
+Mi idea es que sea tan simple y fácil de usar que la pueda usar cualquiera, pero que además sea útil para quienes manejamos muchos archivos. Está pensada para resolver problemas y para poder seguir creciendo sin muchas complicaciones.
+
+**¿Y dentro de un año?**
+Me gustaría que herramientas como esta ya vinieran integradas en Claude Code o en Codex; y seguramente acabe haciendo una versión online. Pero eso son cosas para más adelante: ahora toca centrarse en un proyecto, terminarlo y pasar al siguiente, que es justo lo que más me cuesta.
 
 ## Historia y créditos
 
