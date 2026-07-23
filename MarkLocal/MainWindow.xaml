@@ -1,0 +1,456 @@
+<Window x:Class="MarkLocal.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="MarkLocal"
+        Height="780"
+        Width="1280"
+        MinHeight="420"
+        MinWidth="720"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource ChromeForegroundBrush}"
+        Icon="pack://application:,,,/Assets/marklocal.ico"
+        AllowDrop="True">
+    <DockPanel LastChildFill="True">
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top">
+            <MenuItem Header="_Archivo">
+                <MenuItem Header="_Nuevo" Click="OnNewClicked" InputGestureText="Ctrl+N"/>
+                <MenuItem x:Name="TemplatesMenu" Header="Nuevo desde _plantilla"/>
+                <MenuItem Header="_Abrir..." Click="OnOpenClicked" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Abrir _carpeta..." Click="OnOpenFolderClicked" InputGestureText="Ctrl+K Ctrl+O"/>
+                <MenuItem Header="C_errar carpeta" Click="OnCloseWorkspaceClicked"/>
+                <MenuItem x:Name="RecentMenu" Header="Abrir _recientes"/>
+                <Separator/>
+                <MenuItem Header="_Guardar" Click="OnSaveClicked" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Guardar _como..." Click="OnSaveAsClicked" InputGestureText="Ctrl+Shift+S"/>
+                <Separator/>
+                <MenuItem Header="_Exportar a HTML..." Click="OnExportHtmlClicked"/>
+                <MenuItem Header="Exportar a _PDF..." Click="OnExportPdfClicked" InputGestureText="Ctrl+Shift+P"/>
+                <MenuItem Header="_Imprimir..." Click="OnPrintClicked" InputGestureText="Ctrl+P"/>
+                <Separator/>
+                <MenuItem Header="_Salir" Click="OnExitClicked"/>
+            </MenuItem>
+            <MenuItem Header="_Editar">
+                <MenuItem Header="Deshacer" Click="OnUndoClicked" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="Rehacer" Click="OnRedoClicked" InputGestureText="Ctrl+Y"/>
+                <Separator/>
+                <MenuItem Header="Cortar" Click="OnCutClicked" InputGestureText="Ctrl+X"/>
+                <MenuItem Header="Copiar" Click="OnCopyClicked" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="Pegar" Click="OnPasteClicked" InputGestureText="Ctrl+V"/>
+                <Separator/>
+                <MenuItem Header="Seleccionar todo" Click="OnSelectAllClicked" InputGestureText="Ctrl+A"/>
+                <MenuItem Header="Buscar / Reemplazar..." Click="OnFindClicked" InputGestureText="Ctrl+F"/>
+            </MenuItem>
+            <MenuItem Header="_Formato">
+                <MenuItem Header="Negrita" Click="OnBoldClicked" InputGestureText="Ctrl+B"/>
+                <MenuItem Header="Cursiva" Click="OnItalicClicked" InputGestureText="Ctrl+I"/>
+                <MenuItem Header="Tachado" Click="OnStrikeClicked"/>
+                <MenuItem Header="Código inline" Click="OnInlineCodeClicked"/>
+                <MenuItem Header="Bloque de código" Click="OnCodeBlockClicked" InputGestureText="Ctrl+Shift+C"/>
+                <Separator/>
+                <MenuItem Header="Encabezado 1" Click="OnH1Clicked"/>
+                <MenuItem Header="Encabezado 2" Click="OnH2Clicked"/>
+                <MenuItem Header="Encabezado 3" Click="OnH3Clicked"/>
+                <Separator/>
+                <MenuItem Header="Lista con viñetas" Click="OnBulletListClicked"/>
+                <MenuItem Header="Lista numerada" Click="OnNumberedListClicked"/>
+                <MenuItem Header="Lista de tareas" Click="OnTaskListClicked" InputGestureText="Ctrl+Shift+L"/>
+                <MenuItem Header="Cita" Click="OnQuoteClicked"/>
+                <MenuItem Header="Regla horizontal" Click="OnHorizontalRuleClicked"/>
+                <Separator/>
+                <MenuItem Header="Insertar enlace..." Click="OnLinkClicked" InputGestureText="Ctrl+K"/>
+                <MenuItem Header="Insertar imagen..." Click="OnImageClicked"/>
+                <MenuItem Header="Insertar tabla básica" Click="OnTableClicked" InputGestureText="Ctrl+Alt+T"/>
+                <Separator/>
+                <MenuItem Header="Insertar Front Matter YAML" Click="OnInsertFrontMatterClicked"/>
+                <MenuItem Header="Insertar callout (nota)" Click="OnInsertCalloutNoteClicked"/>
+                <MenuItem Header="Insertar callout (aviso)" Click="OnInsertCalloutWarningClicked"/>
+                <MenuItem Header="Insertar tabla de contenidos [TOC]" Click="OnInsertTocClicked"/>
+            </MenuItem>
+            <MenuItem Header="_Ver">
+                <MenuItem x:Name="ModeEditorItem" Header="Solo _editor" IsCheckable="True" Click="OnModeEditorClicked"/>
+                <MenuItem x:Name="ModeSplitItem" Header="_Dividido" IsCheckable="True" IsChecked="True" Click="OnModeSplitClicked"/>
+                <MenuItem x:Name="ModeReaderItem" Header="Solo _lectura" IsCheckable="True" Click="OnModeReaderClicked"/>
+                <Separator/>
+                <MenuItem x:Name="OutlineToggleItem" Header="Mostrar es_quema" IsCheckable="True" IsChecked="True" Click="OnToggleOutlineClicked"/>
+                <MenuItem x:Name="WordWrapItem" Header="Ajuste de _línea" IsCheckable="True" IsChecked="True" Click="OnToggleWordWrapClicked"/>
+                <MenuItem x:Name="FocusModeItem" Header="Modo _foco" IsCheckable="True" Click="OnFocusModeClicked" InputGestureText="F11"/>
+                <MenuItem x:Name="FocusFullModeItem" Header="Foco a pantalla c_ompleta" IsCheckable="True" Click="OnFocusFullModeClicked" InputGestureText="Mayús+F11"/>
+                <Separator/>
+                <MenuItem Header="Aumentar tamaño" Click="OnZoomInClicked" InputGestureText="Ctrl++"/>
+                <MenuItem Header="Reducir tamaño" Click="OnZoomOutClicked" InputGestureText="Ctrl+-"/>
+                <MenuItem Header="Restaurar tamaño" Click="OnZoomResetClicked" InputGestureText="Ctrl+0"/>
+                <Separator/>
+                <MenuItem x:Name="ThemeLightItem" Header="Tema _claro" IsCheckable="True" Click="OnThemeLightClicked"/>
+                <MenuItem x:Name="ThemeDarkItem" Header="Tema _oscuro" IsCheckable="True" Click="OnThemeDarkClicked"/>
+                <MenuItem x:Name="ThemeSystemItem" Header="Seguir el _sistema" IsCheckable="True" IsChecked="True" Click="OnThemeSystemClicked"/>
+            </MenuItem>
+            <MenuItem Header="_Herramientas">
+                <MenuItem Header="Preferencias..." Click="OnPreferencesClicked"/>
+            </MenuItem>
+            <MenuItem Header="A_yuda">
+                <MenuItem Header="Buscar actualizaciones..." Click="OnCheckUpdatesClicked"/>
+                <Separator/>
+                <MenuItem Header="Acerca de MarkLocal" Click="OnAboutClicked"/>
+            </MenuItem>
+        </Menu>
+
+        <ToolBarTray x:Name="MainToolBarTray" DockPanel.Dock="Top" IsLocked="True">
+            <ToolBar Band="0" BandIndex="0" ToolBarTray.IsLocked="True" Loaded="OnToolBarLoaded">
+                <ToggleButton x:Name="ToolbarModeEditor"
+                              ToolBar.OverflowMode="Never"
+                              Click="OnModeEditorClicked"
+                              ToolTip="Solo editor"
+                              MinWidth="78">Editor</ToggleButton>
+                <ToggleButton x:Name="ToolbarModeSplit"
+                              ToolBar.OverflowMode="Never"
+                              Click="OnModeSplitClicked"
+                              ToolTip="Dividido (editor + preview)"
+                              MinWidth="78">Dividido</ToggleButton>
+                <ToggleButton x:Name="ToolbarModeReader"
+                              ToolBar.OverflowMode="Never"
+                              Click="OnModeReaderClicked"
+                              ToolTip="Solo lectura"
+                              MinWidth="78">Lectura</ToggleButton>
+                <Separator ToolBar.OverflowMode="Never"/>
+                <ToggleButton x:Name="ToolbarOutlineToggle"
+                              ToolBar.OverflowMode="Never"
+                              Click="OnToggleOutlineFromToolbar"
+                              ToolTip="Mostrar u ocultar el panel lateral (esquema y carpetas)"
+                              MinWidth="78">☰ Esquema</ToggleButton>
+                <Separator ToolBar.OverflowMode="Never"/>
+                <Button ToolBar.OverflowMode="Never"
+                        Click="OnRevealInExplorerClicked"
+                        ToolTip="Mostrar el archivo actual en el Explorador de Windows">🔍 Ver en Explorador</Button>
+                <Button ToolBar.OverflowMode="Never"
+                        Click="OnOpenDocFolderAsWorkspaceClicked"
+                        ToolTip="Abrir la carpeta de este documento como espacio de trabajo (pestaña CARPETA)">📂 Abrir carpeta aquí</Button>
+                <Separator ToolBar.OverflowMode="Never"/>
+                <ToggleButton x:Name="ToolbarFocusMode"
+                              ToolBar.OverflowMode="Never"
+                              Click="OnFocusModeClicked"
+                              ToolTip="Modo foco: oculta paneles y menú (F11)">🎯 Foco</ToggleButton>
+                <ToggleButton x:Name="ToolbarFocusFullMode"
+                              ToolBar.OverflowMode="Never"
+                              Click="OnFocusFullModeClicked"
+                              ToolTip="Modo foco a pantalla completa (Mayús+F11)">⛶ Pantalla completa</ToggleButton>
+            </ToolBar>
+            <ToolBar x:Name="FormatToolBar" Band="1" BandIndex="0" ToolBarTray.IsLocked="True" Loaded="OnToolBarLoaded">
+                <Button ToolBar.OverflowMode="Never" Click="OnBoldClicked" ToolTip="Negrita (Ctrl+B)" MinWidth="32" FontWeight="Bold">B</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnItalicClicked" ToolTip="Cursiva (Ctrl+I)" MinWidth="32" FontStyle="Italic">I</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnStrikeClicked" ToolTip="Tachado" MinWidth="32">
+                    <TextBlock Text="S" TextDecorations="Strikethrough"/>
+                </Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnInlineCodeClicked" ToolTip="Código inline" MinWidth="32" FontFamily="Consolas">&lt;/&gt;</Button>
+                <Separator ToolBar.OverflowMode="Never"/>
+                <Button ToolBar.OverflowMode="Never" Click="OnH1Clicked" ToolTip="Encabezado 1" MinWidth="32">H1</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnH2Clicked" ToolTip="Encabezado 2" MinWidth="32">H2</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnH3Clicked" ToolTip="Encabezado 3" MinWidth="32">H3</Button>
+                <Separator ToolBar.OverflowMode="Never"/>
+                <Button ToolBar.OverflowMode="Never" Click="OnBulletListClicked" ToolTip="Lista con viñetas" MinWidth="32">•≡</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnNumberedListClicked" ToolTip="Lista numerada" MinWidth="32">1.≡</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnTaskListClicked" ToolTip="Lista de tareas (Ctrl+Mayús+L)" MinWidth="32">☑</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnQuoteClicked" ToolTip="Cita" MinWidth="32">❝</Button>
+                <Separator ToolBar.OverflowMode="Never"/>
+                <Button ToolBar.OverflowMode="Never" Click="OnLinkClicked" ToolTip="Insertar enlace (Ctrl+K)" MinWidth="32">🔗</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnImageClicked" ToolTip="Insertar imagen" MinWidth="32">🖼</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnTableClicked" ToolTip="Insertar tabla (Ctrl+Alt+T)" MinWidth="32">▦</Button>
+                <Button ToolBar.OverflowMode="Never" Click="OnCodeBlockClicked" ToolTip="Bloque de código (Ctrl+Mayús+C)" MinWidth="36" FontFamily="Consolas">```</Button>
+            </ToolBar>
+        </ToolBarTray>
+
+        <StatusBar x:Name="MainStatusBar" DockPanel.Dock="Bottom" Height="26">
+            <StatusBarItem x:Name="PortableIndicator" Visibility="Collapsed">
+                <Border Background="{DynamicResource AccentBrush}" Padding="6,1" CornerRadius="3">
+                    <TextBlock Text="MODO PORTABLE" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                </Border>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="StatusPath" Text="Sin guardar" Foreground="{DynamicResource ChromeForegroundBrush}"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="StatusDirty" Text="Sin cambios" Foreground="{DynamicResource MutedForegroundBrush}"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="StatusWords" Text="0 palabras" Foreground="{DynamicResource MutedForegroundBrush}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="StatusChars" Text="0 caracteres" Foreground="{DynamicResource MutedForegroundBrush}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="StatusLineCol" Text="Lín 1, Col 1" Foreground="{DynamicResource MutedForegroundBrush}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="StatusMode" Text="Dividido" Foreground="{DynamicResource MutedForegroundBrush}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="StatusEncoding" Text="UTF-8" Foreground="{DynamicResource MutedForegroundBrush}" Margin="0,0,8,0"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="OutlineColumn" Width="250"/>
+                <ColumnDefinition x:Name="OutlineSplitterColumn" Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="{DynamicResource WindowBackgroundBrush}"
+                    BorderBrush="{DynamicResource DividerBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="2*" MinHeight="60"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="1.6*" MinHeight="60"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- SECCIÓN 1: ESQUEMA -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource ChromeBackgroundBrush}"
+                            BorderBrush="{DynamicResource DividerBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="10,6">
+                        <TextBlock Text="ESQUEMA"
+                                   FontWeight="SemiBold"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource MutedForegroundBrush}"/>
+                    </Border>
+                    <Grid Grid.Row="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      Background="Transparent">
+                            <TreeView x:Name="OutlineTree"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      Foreground="{DynamicResource ChromeForegroundBrush}"
+                                      SelectedItemChanged="OnOutlineSelected">
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                        <Setter Property="IsExpanded" Value="True"/>
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                            </TreeView>
+                        </ScrollViewer>
+                        <TextBlock x:Name="OutlineEmptyHint"
+                                   Text="(El documento aún no tiene encabezados)"
+                                   Margin="14,12"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource MutedForegroundBrush}"
+                                   FontStyle="Italic"
+                                   Visibility="Collapsed"/>
+                    </Grid>
+
+                    <!-- SECCIÓN 2: EN ESTA CARPETA (hermanos del documento) -->
+                    <Border x:Name="SiblingsHeader"
+                            Grid.Row="2"
+                            Background="{DynamicResource ChromeBackgroundBrush}"
+                            BorderBrush="{DynamicResource DividerBrush}"
+                            BorderThickness="0,1,0,1"
+                            Padding="10,6"
+                            Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="EN ESTA CARPETA"
+                                       FontWeight="SemiBold"
+                                       FontSize="11"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource MutedForegroundBrush}"/>
+                            <Button Grid.Column="1"
+                                    Content="🔍"
+                                    ToolTip="Abrir esta carpeta en el Explorador de Windows"
+                                    Padding="4,0"
+                                    MinHeight="20"
+                                    FontSize="11"
+                                    Click="OnOpenDocumentFolderClicked"/>
+                        </Grid>
+                    </Border>
+                    <ListBox x:Name="SiblingsList"
+                             Grid.Row="3"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             Foreground="{DynamicResource ChromeForegroundBrush}"
+                             MaxHeight="150"
+                             SelectionMode="Single"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             MouseDoubleClick="OnSiblingDoubleClick"
+                             KeyDown="OnSiblingKeyDown"
+                             Visibility="Collapsed">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="10,4"/>
+                                <Setter Property="Foreground" Value="{DynamicResource ChromeForegroundBrush}"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontWeight="{Binding FontWeight}"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding FullPath}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- SECCIÓN 3: CARPETA (espacio de trabajo) -->
+                    <Border Grid.Row="4"
+                            Background="{DynamicResource ChromeBackgroundBrush}"
+                            BorderBrush="{DynamicResource DividerBrush}"
+                            BorderThickness="0,1,0,1"
+                            Padding="10,5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="CARPETA"
+                                       FontWeight="SemiBold"
+                                       FontSize="11"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,8,0"
+                                       Foreground="{DynamicResource MutedForegroundBrush}"/>
+                            <TextBlock x:Name="WorkspaceRootLabel"
+                                       Grid.Column="1"
+                                       Text=""
+                                       FontSize="11"
+                                       TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource ChromeForegroundBrush}"
+                                       ToolTip="{Binding ElementName=WorkspaceRootLabel, Path=Text}"/>
+                            <Button x:Name="WorkspaceUpButton"
+                                    Grid.Column="2"
+                                    Content="↑"
+                                    ToolTip="Subir a la carpeta padre"
+                                    Padding="5,0"
+                                    Margin="4,0,0,0"
+                                    MinHeight="20"
+                                    FontSize="11"
+                                    Click="OnWorkspaceUpClicked"/>
+                            <Button x:Name="WorkspaceRefreshButton"
+                                    Grid.Column="3"
+                                    Content="⟳"
+                                    ToolTip="Recargar el árbol de la carpeta"
+                                    Padding="5,0"
+                                    Margin="4,0,0,0"
+                                    MinHeight="20"
+                                    FontSize="11"
+                                    Click="OnRefreshWorkspaceClicked"/>
+                            <Button x:Name="WorkspaceCloseButton"
+                                    Grid.Column="4"
+                                    Content="✕"
+                                    ToolTip="Cerrar la carpeta de trabajo"
+                                    Padding="5,0"
+                                    Margin="4,0,0,0"
+                                    MinHeight="20"
+                                    FontSize="11"
+                                    Click="OnCloseWorkspaceClicked"/>
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Row="5">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      Background="Transparent">
+                            <TreeView x:Name="WorkspaceTree"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      Foreground="{DynamicResource ChromeForegroundBrush}"
+                                      MouseDoubleClick="OnWorkspaceTreeDoubleClick"
+                                      KeyDown="OnWorkspaceTreeKeyDown"/>
+                        </ScrollViewer>
+                        <StackPanel x:Name="WorkspaceEmptyPanel" Margin="14,12">
+                            <TextBlock x:Name="WorkspaceEmptyHint"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}"
+                                       FontStyle="Italic"
+                                       Text="No hay ninguna carpeta abierta."/>
+                            <Button Content="Abrir carpeta..."
+                                    Click="OnOpenFolderClicked"
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Padding="10,4"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <GridSplitter Grid.Column="1"
+                          Width="6"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          ResizeDirection="Columns"
+                          ResizeBehavior="PreviousAndNext"
+                          Cursor="SizeWE"
+                          Focusable="False"
+                          Background="{DynamicResource DividerBrush}"
+                          ShowsPreview="False"/>
+
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="EditorColumn" Width="*" MinWidth="200"/>
+                    <ColumnDefinition x:Name="EditorSplitterColumn" Width="Auto"/>
+                    <ColumnDefinition x:Name="PreviewColumn" Width="*" MinWidth="200"/>
+                </Grid.ColumnDefinitions>
+
+                <avalonedit:TextEditor x:Name="Editor"
+                                       Grid.Column="0"
+                                       FontFamily="Consolas"
+                                       FontSize="15"
+                                       ShowLineNumbers="True"
+                                       WordWrap="True"
+                                       SyntaxHighlighting="Markdown"
+                                       Background="{DynamicResource EditorBackgroundBrush}"
+                                       Foreground="{DynamicResource EditorForegroundBrush}"
+                                       Padding="10,8"/>
+
+                <GridSplitter x:Name="EditorPreviewSplitter"
+                              Grid.Column="1"
+                              Width="4"
+                              HorizontalAlignment="Stretch"
+                              Background="{DynamicResource DividerBrush}"
+                              ShowsPreview="False"/>
+
+                <wv2:WebView2 x:Name="Preview"
+                              Grid.Column="2"
+                              DefaultBackgroundColor="White"/>
+            </Grid>
+
+            <Border x:Name="FocusExitHint"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,12,16,0"
+                    Padding="10,5"
+                    Background="{DynamicResource ChromeBackgroundBrush}"
+                    BorderBrush="{DynamicResource DividerBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Opacity="0.85"
+                    Visibility="Collapsed">
+                <TextBlock x:Name="FocusExitHintText"
+                           Text="Modo foco · F11 o Esc para salir"
+                           Foreground="{DynamicResource ChromeForegroundBrush}"
+                           FontSize="11"/>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

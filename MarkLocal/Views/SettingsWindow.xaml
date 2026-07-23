@@ -1,0 +1,122 @@
+<Window x:Class="MarkLocal.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Preferencias — MarkLocal"
+        Height="720" Width="560"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource ChromeForegroundBrush}">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Apariencia" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tema" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="ThemeCombo" Grid.Row="0" Grid.Column="1" Margin="0,4">
+                        <ComboBoxItem Content="Sistema"/>
+                        <ComboBoxItem Content="Claro"/>
+                        <ComboBoxItem Content="Oscuro"/>
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Fuente del editor" VerticalAlignment="Center"/>
+                    <TextBox x:Name="FontFamilyBox" Grid.Row="1" Grid.Column="1" Margin="0,4"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Tamaño del editor" VerticalAlignment="Center"/>
+                    <TextBox x:Name="FontSizeBox" Grid.Row="2" Grid.Column="1" Margin="0,4"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Tamaño de la preview" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PreviewFontSizeBox" Grid.Row="3" Grid.Column="1" Margin="0,4"/>
+
+                    <CheckBox x:Name="WordWrapCheck" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Ajuste de línea en el editor" Margin="0,8"/>
+                </Grid>
+
+                <TextBlock Text="Editor" FontWeight="SemiBold" Margin="0,8,0,6"/>
+                <CheckBox x:Name="LineNumbersCheck" Content="Mostrar números de línea" Margin="0,4"/>
+                <CheckBox x:Name="AutoPairCheck" Content="Autopareado de paréntesis y comillas" Margin="0,4"/>
+                <CheckBox x:Name="OutlineCheck" Content="Mostrar el panel de esquema" Margin="0,4"/>
+
+                <TextBlock Text="Documento" FontWeight="SemiBold" Margin="0,12,0,6"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Final de línea por defecto" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="LineEndingCombo" Grid.Row="0" Grid.Column="1" Margin="0,4">
+                        <ComboBoxItem Content="CRLF (Windows)"/>
+                        <ComboBoxItem Content="LF (Unix)"/>
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Carpeta para imágenes" VerticalAlignment="Center"/>
+                    <TextBox x:Name="AssetsFolderBox" Grid.Row="1" Grid.Column="1" Margin="0,4"/>
+                </Grid>
+
+                <CheckBox x:Name="CopyImagesCheck" Content="Copiar imágenes externas a la carpeta del documento" Margin="0,8"/>
+                <CheckBox x:Name="AllowHtmlCheck" Content="Permitir HTML inline en el Markdown (no recomendado)" Margin="0,4"/>
+
+                <TextBlock Text="Preview" FontWeight="SemiBold" Margin="0,12,0,6"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Debounce (ms)" VerticalAlignment="Center"/>
+                    <TextBox x:Name="DebounceBox" Grid.Column="1" Margin="0,4"/>
+                </Grid>
+
+                <TextBlock Text="CSS personalizado" FontWeight="SemiBold" Margin="0,12,0,4"/>
+                <TextBlock Text="Se aplica después del CSS del tema. Permite ajustar tipografía, anchura, colores, etc."
+                           Margin="0,0,0,6" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap"/>
+                <TextBox x:Name="CustomCssBox" IsReadOnly="True" Margin="0,0,0,4"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Examinar..." Width="100" Margin="0,0,6,0" Click="OnBrowseCustomCss"/>
+                    <Button Content="Crear plantilla" Width="120" Margin="0,0,6,0" Click="OnCreateCssTemplate"/>
+                    <Button Content="Abrir en el editor" Width="140" Margin="0,0,6,0" Click="OnOpenCustomCss"/>
+                    <Button Content="Quitar" Width="80" Click="OnRemoveCustomCss"/>
+                </StackPanel>
+
+                <TextBlock Text="Integración con Windows" FontWeight="SemiBold" Margin="0,12,0,6"/>
+                <TextBlock x:Name="AssociationStatus" Text="" Margin="0,0,0,6" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="AssociateButton" Content="Asociar archivos .md" Width="180" Margin="0,0,8,0" Click="OnAssociateClicked"/>
+                    <Button x:Name="DisassociateButton" Content="Quitar asociación" Width="160" Click="OnDisassociateClicked"/>
+                </StackPanel>
+
+                <TextBlock x:Name="ShellNewStatus" Text="" Margin="0,12,0,6" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="EnableShellNewButton" Content="Añadir &quot;Nuevo Markdown&quot;" Width="200" Margin="0,0,8,0" Click="OnEnableShellNewClicked"/>
+                    <Button x:Name="DisableShellNewButton" Content="Quitar &quot;Nuevo Markdown&quot;" Width="200" Click="OnDisableShellNewClicked"/>
+                </StackPanel>
+
+                <TextBlock x:Name="ConfigPathHint" Text="" Margin="0,16,0,0" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Cancelar" Width="100" Margin="0,0,8,0" Click="OnCancel" IsCancel="True"/>
+            <Button Content="Guardar" Width="120" Click="OnAccept" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

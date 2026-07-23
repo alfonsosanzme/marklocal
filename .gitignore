@@ -1,0 +1,24 @@
+# Compilación .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Artefactos de distribución (se publican en Releases, no en el repo)
+dist/
+*.wixpdb
+
+# Copias de seguridad locales
+MarkLocal - copia/
+*.bak
+
+# Claude Code (configuración local de sesión)
+.claude/
+
+# Sistema
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Librerías opcionales descargadas (Mermaid, MathJax) — instrucciones en Assets/lib/README.md
+MarkLocal/Assets/lib/*.js

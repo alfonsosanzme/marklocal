@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>MarkLocal</AssemblyName>
+    <RootNamespace>MarkLocal</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\marklocal.ico</ApplicationIcon>
+    <Version>0.1.0</Version>
+    <Authors>Alfonso Sanz López (Kairis)</Authors>
+    <Product>MarkLocal</Product>
+    <Description>Editor y visor Markdown local para Windows. Creado por Alfonso Sanz López (Kairis · kairis.es). Desarrollo apoyado en Claude Opus 4.7.</Description>
+    <Company>Kairis</Company>
+    <Copyright>© 2026 Alfonso Sanz López — Kairis (kairis.es)</Copyright>
+    <PackageProjectUrl>https://github.com/alfonsosanzme/marklocal</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/alfonsosanzme/marklocal</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!--
+      NU1902 sigue marcando HtmlSanitizer 9.0.x con un aviso heredado del 8.x.
+      La 9.0.884 es la última publicada y el equipo lo considera mitigado.
+      Lo silenciamos para que no contamine el build.
+    -->
+    <NoWarn>$(NoWarn);NU1902</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.37.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="HtmlSanitizer" Version="9.0.884" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\preview.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\preview-dark.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\lib\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Assets\lib\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+    <Resource Include="Resources\MarkdownHighlighting.xshd" />
+    <Resource Include="Resources\MarkdownHighlighting.Dark.xshd" />
+    <Resource Include="Assets\marklocal.ico" />
+  </ItemGroup>
+
+</Project>

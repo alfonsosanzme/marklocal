@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MarkLocal - definición del MSI con WiX Toolset v5.
+
+  UpgradeCode: NUNCA cambia entre versiones. Es lo que permite que cada MSI nuevo
+               reconozca a la versión instalada anterior y la actualice limpiamente.
+  ProductCode: se regenera automáticamente al subir Version (atributo "*" en Package).
+
+  Instalación per-user (sin admin) en %LocalAppData%\Programs\MarkLocal.
+  MajorUpgrade: cada versión nueva desinstala la anterior antes de instalarse.
+
+  Variables que pasa build-msi.ps1:
+    PublishDir  - carpeta del publish self-contained
+    Version     - versión semver (ej. 0.1.0)
+    IconPath    - ruta absoluta al .ico
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Package
+      Name="MarkLocal"
+      Manufacturer="Kairis"
+      Version="$(Version)"
+      UpgradeCode="1C9CE61E-67A1-453C-9869-C4BF713037DC"
+      Scope="perUser"
+      InstallerVersion="500"
+      Compressed="yes">
+
+    <SummaryInformation Description="Editor y visor Markdown local para Windows" />
+
+    <!-- Cada versión nueva desinstala la anterior y luego instala la nueva. -->
+    <MajorUpgrade
+        AllowSameVersionUpgrades="yes"
+        DowngradeErrorMessage="Ya tienes instalada una versión más reciente de MarkLocal." />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- Icono para "Aplicaciones instaladas". -->
+    <Icon Id="MarkLocalIcon.exe" SourceFile="$(IconPath)" />
+    <Property Id="ARPPRODUCTICON" Value="MarkLocalIcon.exe" />
+    <Property Id="ARPHELPLINK" Value="https://kairis.es" />
+    <Property Id="ARPURLINFOABOUT" Value="https://kairis.es" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+
+    <!-- Estructura de carpetas de instalación: %LocalAppData%\Programs\MarkLocal. -->
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="MarkLocal" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="StartMenuMarkLocal" Name="MarkLocal" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- ============================================================
+         Componente: atajo en menú Inicio (siempre).
+         ============================================================ -->
+    <Component Id="StartMenuShortcut" Directory="StartMenuMarkLocal" Guid="3F5B7C1A-2E83-4F4C-9E47-1E6C3A2C9F11">
+      <Shortcut
+          Id="MarkLocalStartMenu"
+          Name="MarkLocal"
+          Description="Editor Markdown local"
+          Target="[INSTALLFOLDER]MarkLocal.exe"
+          WorkingDirectory="INSTALLFOLDER"
+          Icon="MarkLocalIcon.exe"
+          IconIndex="0" />
+      <RemoveFolder Id="RemoveStartMenuMarkLocal" Directory="StartMenuMarkLocal" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\Kairis\MarkLocal" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- ============================================================
+         Componente: atajo en escritorio (feature opcional).
+         ============================================================ -->
+    <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="A18FE6BB-3CB5-4D7A-B26C-3F2DB4B5A7E1">
+      <Shortcut
+          Id="MarkLocalDesktop"
+          Name="MarkLocal"
+          Description="Editor Markdown local"
+          Target="[INSTALLFOLDER]MarkLocal.exe"
+          WorkingDirectory="INSTALLFOLDER"
+          Icon="MarkLocalIcon.exe"
+          IconIndex="0" />
+      <RegistryValue Root="HKCU" Key="Software\Kairis\MarkLocal" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- ============================================================
+         Componente: asociación de .md y .markdown (feature opcional).
+         Per-user: HKCU\Software\Classes.
+         ============================================================ -->
+    <Component Id="FileAssociation" Directory="INSTALLFOLDER" Guid="D6F89A2A-7E1B-4E11-9C5A-AC97B97E4FCC">
+      <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md" Type="string" Value="Documento Markdown" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md\DefaultIcon" Type="string" Value="&quot;[INSTALLFOLDER]MarkLocal.exe&quot;,0" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\MarkLocal.md\shell\open\command" Type="string" Value="&quot;[INSTALLFOLDER]MarkLocal.exe&quot; &quot;%1&quot;" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\.md" Type="string" Value="MarkLocal.md" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\.markdown" Type="string" Value="MarkLocal.md" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\Applications\MarkLocal.exe" Name="FriendlyAppName" Type="string" Value="MarkLocal" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\Applications\MarkLocal.exe\shell\open\command" Type="string" Value="&quot;[INSTALLFOLDER]MarkLocal.exe&quot; &quot;%1&quot;" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\Applications\MarkLocal.exe\SupportedTypes" Name=".md" Type="string" Value="" KeyPath="yes" />
+      <RegistryValue Root="HKCU" Key="Software\Classes\Applications\MarkLocal.exe\SupportedTypes" Name=".markdown" Type="string" Value="" />
+    </Component>
+
+    <!-- ============================================================
+         Características visibles en el wizard estándar.
+         Los <Files Include> dentro del <Feature> añaden todos los archivos
+         del publish self-contained como componentes implícitos.
+         ============================================================ -->
+    <Feature Id="Main"
+             Title="MarkLocal"
+             Description="Archivos del programa, runtime y atajo en menú Inicio."
+             Level="1"
+             ConfigurableDirectory="INSTALLFOLDER"
+             Display="expand"
+             AllowAdvertise="no"
+             AllowAbsent="no">
+      <Files Include="$(PublishDir)\**" Directory="INSTALLFOLDER" />
+      <ComponentRef Id="StartMenuShortcut" />
+
+      <Feature Id="DesktopFeature"
+               Title="Atajo en el escritorio"
+               Description="Crea un icono en el escritorio."
+               Level="1"
+               AllowAdvertise="no">
+        <ComponentRef Id="DesktopShortcut" />
+      </Feature>
+
+      <Feature Id="AssociationFeature"
+               Title="Asociar .md y .markdown"
+               Description="Abre los archivos .md/.markdown con MarkLocal al hacer doble clic."
+               Level="1"
+               AllowAdvertise="no">
+        <ComponentRef Id="FileAssociation" />
+      </Feature>
+    </Feature>
+
+    <!-- UI clásica de WiX con elección de carpeta y características. -->
+    <ui:WixUI Id="WixUI_FeatureTree" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui" />
+
+  </Package>
+</Wix>
